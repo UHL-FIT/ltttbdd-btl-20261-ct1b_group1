@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 class DetailActivity : ComponentActivity() {
@@ -24,7 +25,7 @@ class DetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // NHẬN DỮ LIỆU TỪ INTENT
+        // ===== NHẬN DỮ LIỆU =====
         val name =
             intent.getStringExtra("destination_name")
                 ?: "Không có tên"
@@ -80,23 +81,25 @@ fun DetailScreen(
                 )
         )
 
+        // ===== NỘI DUNG =====
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
 
             // ===== PHẦN CUỘN =====
             Column(
+
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(
                         rememberScrollState()
                     )
+
             ) {
 
-                // ===== ẢNH + NÚT BACK =====
+                // ===== ẢNH =====
                 Box {
 
-                    // ẢNH
                     Image(
                         painter = painterResource(id = image),
                         contentDescription = null,
@@ -108,7 +111,7 @@ fun DetailScreen(
                         contentScale = ContentScale.Crop
                     )
 
-                    // OVERLAY
+                    // ===== OVERLAY ẢNH =====
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -117,7 +120,7 @@ fun DetailScreen(
                             )
                     )
 
-                    // NÚT QUAY LẠI
+                    // ===== NÚT BACK =====
                     IconButton(
 
                         onClick = {
@@ -129,7 +132,7 @@ fun DetailScreen(
                         modifier = Modifier
                             .padding(16.dp)
                             .background(
-                                Color.Black.copy(alpha = 0.5f),
+                                Color.Black.copy(alpha = 0.55f),
                                 shape = RoundedCornerShape(50)
                             )
                             .align(Alignment.TopStart)
@@ -138,6 +141,7 @@ fun DetailScreen(
 
                         Text(
                             text = "←",
+
                             color = Color.White,
 
                             style =
@@ -146,9 +150,26 @@ fun DetailScreen(
                                     .headlineSmall
                         )
                     }
+
+                    // ===== TÊN ĐỊA ĐIỂM TRÊN ẢNH =====
+                    Text(
+
+                        text = name,
+
+                        color = Color.White,
+
+                        style =
+                            MaterialTheme
+                                .typography
+                                .headlineLarge,
+
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(20.dp)
+                    )
                 }
 
-                // ===== THÔNG TIN TOUR =====
+                // ===== CARD THÔNG TIN =====
                 Column(
 
                     modifier = Modifier
@@ -162,24 +183,24 @@ fun DetailScreen(
 
                 ) {
 
-                    // TÊN ĐỊA ĐIỂM
                     Text(
-                        text = name,
+                        text = "Thông tin địa điểm",
 
                         style =
                             MaterialTheme
                                 .typography
-                                .headlineLarge,
+                                .titleLarge,
 
                         color = Color.White
                     )
 
                     Spacer(
-                        modifier = Modifier.height(12.dp)
+                        modifier = Modifier.height(16.dp)
                     )
 
-                    // MÔ TẢ
+                    // ===== DESCRIPTION =====
                     Text(
+
                         text = desc,
 
                         style =
@@ -190,6 +211,10 @@ fun DetailScreen(
                         color = Color.White
                     )
                 }
+
+                Spacer(
+                    modifier = Modifier.height(20.dp)
+                )
             }
 
             // ===== BUTTONS =====
@@ -205,18 +230,26 @@ fun DetailScreen(
             ) {
 
                 Button(
+
                     onClick = {},
 
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+
+                    shape = RoundedCornerShape(14.dp)
+
                 ) {
 
                     Text("ĐẶT TOUR")
                 }
 
                 OutlinedButton(
+
                     onClick = {},
 
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+
+                    shape = RoundedCornerShape(14.dp)
+
                 ) {
 
                     Text("GỢI Ý")
@@ -224,4 +257,29 @@ fun DetailScreen(
             }
         }
     }
+}
+
+
+
+
+
+
+
+
+
+// ================= PREVIEW =================
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewDetailScreen() {
+
+    DetailScreen(
+
+        name = "Đà Nẵng",
+
+        desc =
+            "Đà Nẵng là thành phố biển nổi tiếng của Việt Nam với nhiều địa điểm du lịch đẹp.",
+
+        image = R.drawable.banner_danang
+    )
 }

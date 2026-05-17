@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 class ExploreActivity : ComponentActivity() {
@@ -37,35 +38,44 @@ fun ExploreScreen() {
 
     val context = LocalContext.current
 
-    // Danh sách địa điểm
+    // ===== Danh sách địa điểm =====
+    // Có thể lấy description giống MainActivity
     val destinations = listOf(
 
         Destination(
             name = "Đà Nẵng",
             imageRes = R.drawable.danang,
             bannerRes = R.drawable.banner_danang,
-            description = "Đà Nẵng là thành phố biển đẹp nổi tiếng của Việt Nam."
+
+            description =
+                "Đà Nẵng là một trong những thành phố biển đẹp và đáng sống nhất Việt Nam."
         ),
 
         Destination(
             name = "Huế",
             imageRes = R.drawable.hue,
             bannerRes = R.drawable.banner_hue,
-            description = "Huế nổi tiếng với vẻ đẹp cổ kính và thơ mộng."
+
+            description =
+                "Huế là thành phố cổ kính nổi tiếng với vẻ đẹp trầm mặc."
         ),
 
         Destination(
             name = "Hà Nội",
             imageRes = R.drawable.hanoi,
             bannerRes = R.drawable.banner_hanoi,
-            description = "Hà Nội là thủ đô nghìn năm văn hiến."
+
+            description =
+                "Hà Nội là thủ đô nghìn năm văn hiến của Việt Nam."
         ),
 
         Destination(
             name = "Quảng Ninh",
             imageRes = R.drawable.quangninh,
             bannerRes = R.drawable.banner_quangninh,
-            description = "Quảng Ninh nổi tiếng với Vịnh Hạ Long."
+
+            description =
+                "Quảng Ninh nổi tiếng với kỳ quan thiên nhiên Vịnh Hạ Long."
         )
     )
 
@@ -91,7 +101,6 @@ fun ExploreScreen() {
 
             containerColor = Color.Transparent,
 
-            // ===== Menu dưới =====
             bottomBar = {
                 BottomMenuBar(selectedIndex = 1)
             }
@@ -104,6 +113,7 @@ fun ExploreScreen() {
                     .padding(16.dp)
             ) {
 
+                // ===== Tiêu đề =====
                 item {
 
                     Text(
@@ -123,7 +133,7 @@ fun ExploreScreen() {
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // ===== Danh sách địa điểm =====
+                // ===== Danh sách =====
                 items(destinations) { destination ->
 
                     ExploreCard(
@@ -194,7 +204,7 @@ fun ExploreCard(
                 modifier = Modifier.fillMaxSize()
             )
 
-            // ===== Overlay tối =====
+            // ===== Overlay =====
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -215,4 +225,43 @@ fun ExploreCard(
             )
         }
     }
+}
+
+
+
+
+
+
+
+
+// ================= PREVIEW =================
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewExploreScreen() {
+
+    ExploreScreen()
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewExploreCard() {
+
+    ExploreCard(
+
+        destination = Destination(
+
+            name = "Đà Nẵng",
+
+            imageRes = R.drawable.danang,
+
+            bannerRes = R.drawable.banner_danang,
+
+            description = "Mô tả"
+
+        ),
+
+        onClick = {}
+
+    )
 }
