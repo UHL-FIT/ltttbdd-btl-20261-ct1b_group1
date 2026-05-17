@@ -379,35 +379,27 @@ fun BottomMenuBar(selectedIndex: Int) {
                     when(index) {
 
                         0 -> {
-
                             if(selectedIndex != 0) {
-
-                                context.startActivity(
-                                    Intent(
-                                        context,
-                                        MainActivity::class.java
-                                    )
-                                )
+                                context.startActivity(Intent(context, MainActivity::class.java))
                             }
                         }
 
                         1 -> {
-
                             if(selectedIndex != 1) {
+                                context.startActivity(Intent(context, ExploreActivity::class.java))
+                            }
+                        }
 
-                                context.startActivity(
-                                    Intent(
-                                        context,
-                                        ExploreActivity::class.java
-                                    )
-                                )
+                        4 -> {
+                            // Đây là Tài khoản
+                            if(selectedIndex != 4) {
+                                context.startActivity(Intent(context, AccountActivity::class.java))
                             }
                         }
                     }
                 },
 
                 icon = {
-
                     Icon(
                         item.icon,
                         contentDescription = item.title
@@ -415,7 +407,6 @@ fun BottomMenuBar(selectedIndex: Int) {
                 },
 
                 label = {
-
                     Text(item.title)
                 }
             )
