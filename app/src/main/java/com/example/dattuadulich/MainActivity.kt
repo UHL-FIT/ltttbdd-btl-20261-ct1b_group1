@@ -16,7 +16,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -34,6 +33,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -260,15 +260,21 @@ fun TopSection() {
 
         Spacer(modifier = Modifier.width(8.dp))
 
+        // BẮT BUỘC: Đảm bảo bạn đã có dòng này ở đầu hàm Composable chứa nút bấm
+        val context = LocalContext.current
+
         IconButton(
-            onClick = {},
+            onClick = {
+                // chuyển sang màn hình Cài đặt
+                context.startActivity(android.content.Intent(context, SettingsActivity::class.java))
+            },
             modifier = Modifier
                 .background(
                     Color.Black.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(50)
                 )
         ) {
-            Icon(Icons.Default.Language, null, tint = Color.White)
+            Icon(Icons.Default.Settings, null, tint = Color.White)
         }
     }
 }
