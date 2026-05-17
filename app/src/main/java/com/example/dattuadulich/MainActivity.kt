@@ -160,7 +160,7 @@ fun MainScreen() {
         Scaffold(
             containerColor = Color.Transparent,
             bottomBar = {
-                BottomMenuBar()
+                BottomMenuBar(selectedIndex = 0)
             }
         ) { padding ->
 
@@ -328,53 +328,79 @@ fun AutoSlidingBanner(
     }
 }
 @Composable
-fun BottomMenuBar() {
+fun BottomMenuBar(selectedIndex: Int) {
 
     val context = LocalContext.current
 
     val items = listOf(
+
         BottomNavItem("Home", Icons.Default.Home),
-        BottomNavItem("Khám phá", Icons.Default.Explore),
-        BottomNavItem("Ưu đãi", Icons.Default.LocalOffer),
-        BottomNavItem("Lịch sử", Icons.Default.History),
-        BottomNavItem("Tài khoản", Icons.Default.Person)
+
+        BottomNavItem(
+            "Khám phá",
+            Icons.Default.Explore
+        ),
+
+        BottomNavItem(
+            "Ưu đãi",
+            Icons.Default.LocalOffer
+        ),
+
+        BottomNavItem(
+            "Lịch sử",
+            Icons.Default.History
+        ),
+
+        BottomNavItem(
+            "Tài khoản",
+            Icons.Default.Person
+        )
     )
 
-    var selectedItem by remember { mutableStateOf(0) }
-
     NavigationBar(
-        containerColor = Color(0xFFFFB74D),
-        tonalElevation = 8.dp
+        containerColor = Color(0xFFFFB74D)
     ) {
 
         items.forEachIndexed { index, item ->
 
             NavigationBarItem(
-                selected = selectedItem == index,
+
+                selected = selectedIndex == index,
 
                 onClick = {
-
-                    selectedItem = index
 
                     when(index) {
 
                         0 -> {
-                            val intent =
-                                Intent(context, MainActivity::class.java)
 
-                            context.startActivity(intent)
+                            if(selectedIndex != 0) {
+
+                                context.startActivity(
+                                    Intent(
+                                        context,
+                                        MainActivity::class.java
+                                    )
+                                )
+                            }
                         }
 
                         1 -> {
-                            val intent =
-                                Intent(context, ExploreActivity::class.java)
 
-                            context.startActivity(intent)
+                            if(selectedIndex != 1) {
+
+                                context.startActivity(
+                                    Intent(
+                                        context,
+                                        ExploreActivity::class.java
+                                    )
+                                )
+                            }
                         }
                     }
                 },
 
                 icon = {
+
                     Icon(
                         item.icon,
                         contentDescription = item.title
@@ -382,6 +408,7 @@ fun BottomMenuBar() {
                 },
 
                 label = {
+
                     Text(item.title)
                 }
             )
@@ -398,7 +425,7 @@ fun DestinationCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(130.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(20.dp)
     ) {
