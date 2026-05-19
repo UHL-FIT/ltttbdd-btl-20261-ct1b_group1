@@ -28,7 +28,7 @@
         <activity
             android:name=".ExploreActivity"
             android:exported="false" />
-
+        <activity android:name=".AccountActivity"/>
     </application>
 
 </manifest>

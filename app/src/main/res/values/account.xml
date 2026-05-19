@@ -2,6 +2,8 @@
 <resources>
     <string name="txtf_login">Tài khoản</string>
     <string name="txtf_password">Mật khẩu</string>
+    <string name="txtf_repassword">Nhập lại mật khẩu</string>
     <string name="bnt_dangnhap">Đăng nhập</string>
     <string name="btn_dangky">Đăng ký</string>
+
 </resources>

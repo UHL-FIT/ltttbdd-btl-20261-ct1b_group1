@@ -396,6 +396,7 @@ fun BottomMenuBar(selectedIndex: Int) {
                                 )
                             }
                         }
+                        4 -> {val intent = Intent(context, LogInActivity::class.java)}
                     }
                 },
 
