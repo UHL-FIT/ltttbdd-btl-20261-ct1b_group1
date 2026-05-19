@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.History
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +58,7 @@ data class BottomNavItem(
     val title: String,
     val icon: ImageVector
 )
-
+@Preview
 @Composable
 fun MainScreen() {
 
