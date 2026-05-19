@@ -1,5 +1,6 @@
 package com.example.dattuadulich
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,20 +20,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
-class SignInActivity : ComponentActivity() {
+class LogInActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-
+            LoginScreen()
         }
     }
 }
 @Composable
-fun signinAndPasswordField(
+fun loginAndPasswordField(
     label: String,
     value: String,
     onValueChange:(String) ->Unit,
@@ -45,20 +47,27 @@ fun signinAndPasswordField(
         onValueChange = onValueChange,
         keyboardOptions = keyboardOptions,
         modifier = modifier
-    )
+)
 }
 @Composable
-fun SignInButton(){
-    Button(onClick = {}) {
-        Text(text = stringResource(R.string.btn_dangky))
+fun ButtonAccount(){
+    val context = LocalContext.current
+    Row {
+        Button(onClick = {}) {
+            Text(text = stringResource(R.string.bnt_dangnhap))
+        }
+        Spacer(modifier = Modifier.padding(15.dp))
+        Button(onClick = {
+            context.startActivity(Intent(context, SignInActivity::class.java))
+        }) {
+            Text(text = stringResource(R.string.btn_dangky))
+        }
     }
-
 }
 @Composable
-fun SignInScreen() {
+fun LoginScreen() {
     var tk by remember { mutableStateOf("") }
     var mk by remember { mutableStateOf("") }
-    var remk by remember { mutableStateOf("") }
     Box{
         Image(
             painter = painterResource(R.drawable.background_app),
@@ -67,6 +76,7 @@ fun SignInScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .blur(10.dp)
+
         )
     }
     Column(
@@ -74,33 +84,25 @@ fun SignInScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        signinAndPasswordField(
+        loginAndPasswordField(
             label = stringResource(R.string.txtf_login),
             value = tk,
             onValueChange ={tk = it},
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
-        signinAndPasswordField(
+        loginAndPasswordField(
             label = stringResource(R.string.txtf_password),
             value = mk,
             onValueChange = {mk = it},
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
-        signinAndPasswordField(
-            label = stringResource(R.string.txtf_repassword),
-            value = remk,
-            onValueChange = {remk = it},
-            keyboardOptions = KeyboardOptions.Default
-        )
-        Spacer(modifier = Modifier.height(15.dp))
-        SignInButton()
-
+        ButtonAccount()
     }
 }
 @Preview(showBackground = true)
 @Composable
-fun SigninPreview(){
-    SignInScreen()
+fun LoginPreview(){
+    LoginScreen()
 }

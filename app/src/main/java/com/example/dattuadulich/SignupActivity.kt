@@ -21,18 +21,18 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 
-class LogInActivity : ComponentActivity() {
+class SignInActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            LogInScreen()
+            SignupScreen()
         }
     }
 }
 @Composable
-fun loginAndPasswordField(
+fun signupAndPasswordField(
     label: String,
     value: String,
     onValueChange:(String) ->Unit,
@@ -45,24 +45,20 @@ fun loginAndPasswordField(
         onValueChange = onValueChange,
         keyboardOptions = keyboardOptions,
         modifier = modifier
-)
+    )
 }
 @Composable
-fun ButtonAccount(){
-    Row {
-        Button(onClick = {}) {
-            Text(text = stringResource(R.string.bnt_dangnhap))
-        }
-        Spacer(modifier = Modifier.padding(15.dp))
-        Button(onClick = {}) {
-            Text(text = stringResource(R.string.btn_dangky))
-        }
+fun SignupButton(){
+    Button(onClick = {}) {
+        Text(text = stringResource(R.string.btn_dangky))
     }
+
 }
 @Composable
-fun LogInScreen() {
+fun SignupScreen() {
     var tk by remember { mutableStateOf("") }
     var mk by remember { mutableStateOf("") }
+    var remk by remember { mutableStateOf("") }
     Box{
         Image(
             painter = painterResource(R.drawable.background_app),
@@ -71,7 +67,6 @@ fun LogInScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .blur(10.dp)
-
         )
     }
     Column(
@@ -79,25 +74,33 @@ fun LogInScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        loginAndPasswordField(
+        signupAndPasswordField(
             label = stringResource(R.string.txtf_login),
             value = tk,
             onValueChange ={tk = it},
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
-        loginAndPasswordField(
+        signupAndPasswordField(
             label = stringResource(R.string.txtf_password),
             value = mk,
             onValueChange = {mk = it},
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
-        ButtonAccount()
+        signupAndPasswordField(
+            label = stringResource(R.string.txtf_repassword),
+            value = remk,
+            onValueChange = {remk = it},
+            keyboardOptions = KeyboardOptions.Default
+        )
+        Spacer(modifier = Modifier.height(15.dp))
+        SignupButton()
+
     }
 }
 @Preview(showBackground = true)
 @Composable
-fun LoginPreview(){
-    LogInScreen()
+fun SignupPreview(){
+    SignupScreen()
 }
