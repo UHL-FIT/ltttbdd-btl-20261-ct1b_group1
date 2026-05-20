@@ -32,7 +32,7 @@ class SignInActivity : ComponentActivity() {
     }
 }
 @Composable
-fun signupAndPasswordField(
+fun SignupAndPasswordField(
     label: String,
     value: String,
     onValueChange:(String) ->Unit,
@@ -68,35 +68,34 @@ fun SignupScreen() {
                 .fillMaxSize()
                 .blur(10.dp)
         )
-    }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        signupAndPasswordField(
+        SignupAndPasswordField(
             label = stringResource(R.string.txtf_login),
             value = tk,
-            onValueChange ={tk = it},
+            onValueChange = { tk = it },
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
-        signupAndPasswordField(
+        SignupAndPasswordField(
             label = stringResource(R.string.txtf_password),
             value = mk,
-            onValueChange = {mk = it},
+            onValueChange = { mk = it },
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
-        signupAndPasswordField(
+        SignupAndPasswordField(
             label = stringResource(R.string.txtf_repassword),
             value = remk,
-            onValueChange = {remk = it},
+            onValueChange = { remk = it },
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
         SignupButton()
-
+    }
     }
 }
 @Preview(showBackground = true)

@@ -391,20 +391,8 @@ fun BottomMenuBar(selectedIndex: Int) {
                         }
 
                         4 -> {
-                            // Đây là Tài khoản
                             if(selectedIndex != 4) {
-                                context.startActivity(Intent(context, AccountActivity::class.java))
-                            }
-                        }
-                        4 -> {
-                            if(selectedIndex != 4) {
-
-                                context.startActivity(
-                                    Intent(
-                                        context,
-                                        LogInActivity::class.java
-                                    )
-                                )
+                                context.startActivity(Intent(context, LoginActivity::class.java))
                             }
                         }
                     }
