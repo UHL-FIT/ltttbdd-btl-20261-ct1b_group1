@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 
-class SignInActivity : ComponentActivity() {
+class SignupActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,15 +80,16 @@ fun SignupScreen() {
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
+
         SignupAndPasswordField(
-            label = stringResource(R.string.txtf_password),
+            label = "Mật khẩu",
             value = mk,
             onValueChange = { mk = it },
             keyboardOptions = KeyboardOptions.Default
         )
-        Spacer(modifier = Modifier.height(15.dp))
+
         SignupAndPasswordField(
-            label = stringResource(R.string.txtf_repassword),
+            label = "Nhập lại mật khẩu",
             value = remk,
             onValueChange = { remk = it },
             keyboardOptions = KeyboardOptions.Default

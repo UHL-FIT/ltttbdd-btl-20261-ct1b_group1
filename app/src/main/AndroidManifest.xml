@@ -40,6 +40,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity
             android:name=".DetailActivity"
             android:exported="false" />
@@ -49,6 +51,12 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".LoginActivity" />
+
+        <activity
+            android:name=".SignInActivity" />
+
     </application>
 
 </manifest>
