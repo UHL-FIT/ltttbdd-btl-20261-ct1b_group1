@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainScreen()
+
         }
     }
 }
@@ -53,10 +54,6 @@ data class Destination(
     val imageRes: Int,      // Ảnh card địa danh
     val bannerRes: Int,     // Ảnh banner trượt
     val description: String
-)
-data class BottomNavItem(
-    val title: String,
-    val icon: ImageVector
 )
 @Preview
 @Composable
@@ -334,85 +331,6 @@ fun AutoSlidingBanner(
         }
     }
 }
-@Composable
-fun BottomMenuBar(selectedIndex: Int) {
-
-    val context = LocalContext.current
-
-    val items = listOf(
-
-        BottomNavItem("Home", Icons.Default.Home),
-
-        BottomNavItem(
-            "Khám phá",
-            Icons.Default.Explore
-        ),
-
-        BottomNavItem(
-            "Ưu đãi",
-            Icons.Default.LocalOffer
-        ),
-
-        BottomNavItem(
-            "Lịch sử",
-            Icons.Default.History
-        ),
-
-        BottomNavItem(
-            "Tài khoản",
-            Icons.Default.Person
-        )
-    )
-
-    NavigationBar(
-        containerColor = Color(0xFFFFB74D)
-    ) {
-
-        items.forEachIndexed { index, item ->
-
-            NavigationBarItem(
-
-                selected = selectedIndex == index,
-
-                onClick = {
-
-                    when(index) {
-
-                        0 -> {
-                            if(selectedIndex != 0) {
-                                context.startActivity(Intent(context, MainActivity::class.java))
-                            }
-                        }
-
-                        1 -> {
-                            if(selectedIndex != 1) {
-                                context.startActivity(Intent(context, ExploreActivity::class.java))
-                            }
-                        }
-
-                        4 -> {
-                            if(selectedIndex != 4) {
-                                context.startActivity(Intent(context, LoginActivity::class.java))
-                            }
-                        }
-                    }
-                },
-
-                icon = {
-                    Icon(
-                        item.icon,
-                        contentDescription = item.title
-                    )
-                },
-
-                label = {
-                    Text(item.title)
-                }
-            )
-        }
-    }
-}
-
 @Composable
 fun DestinationCard(
     destination: Destination,

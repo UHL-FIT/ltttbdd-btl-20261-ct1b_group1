@@ -92,7 +92,6 @@ fun ExploreScreen() {
 
             containerColor = Color.Transparent,
 
-            // ===== Menu dưới =====
             bottomBar = {
                 BottomMenuBar(selectedIndex = 1)
             }

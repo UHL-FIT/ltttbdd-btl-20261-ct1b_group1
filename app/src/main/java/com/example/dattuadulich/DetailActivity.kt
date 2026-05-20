@@ -241,19 +241,6 @@ fun DetailScreen(
 
                     Text("ĐẶT TOUR")
                 }
-
-                OutlinedButton(
-
-                    onClick = {},
-
-                    modifier = Modifier.weight(1f),
-
-                    shape = RoundedCornerShape(14.dp)
-
-                ) {
-
-                    Text("GỢI Ý")
-                }
             }
         }
     }
