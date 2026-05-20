@@ -1,5 +1,6 @@
 package com.example.dattuadulich
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
 
@@ -50,12 +52,22 @@ fun LoginAndPasswordField(
 }
 @Composable
 fun ButtonAccount(){
+
+    val context = LocalContext.current
+
     Row {
         Button(onClick = {}) {
             Text(text = stringResource(R.string.bnt_dangnhap))
         }
+
         Spacer(modifier = Modifier.padding(15.dp))
-        Button(onClick = {}) {
+
+        Button(
+            onClick = {
+                context.startActivity(Intent(context, SignupActivity::class.java)
+                )
+            }
+        ) {
             Text(text = stringResource(R.string.btn_dangky))
         }
     }
@@ -87,6 +99,7 @@ fun AccountScreen() {
             keyboardOptions = KeyboardOptions.Default
         )
         Spacer(modifier = Modifier.height(15.dp))
+
         LoginAndPasswordField(
             label = stringResource(R.string.txtf_password),
             value = mk,

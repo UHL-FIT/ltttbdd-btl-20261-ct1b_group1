@@ -55,7 +55,7 @@
             android:name=".LoginActivity" />
 
         <activity
-            android:name=".SignInActivity" />
+            android:name=".SignupActivity" />
 
     </application>
 
