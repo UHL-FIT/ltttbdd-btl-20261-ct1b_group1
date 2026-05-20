@@ -19,9 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.dattuadulich.ui.theme.DattuadulichTheme
 
 class ExploreActivity : ComponentActivity() {
 
@@ -216,12 +214,5 @@ fun ExploreCard(
                     .padding(16.dp)
             )
         }
-    }
-}
-@Preview
-@Composable
-fun ExplorePreview(){
-    DattuadulichTheme {
-        ExploreScreen()
     }
 }
