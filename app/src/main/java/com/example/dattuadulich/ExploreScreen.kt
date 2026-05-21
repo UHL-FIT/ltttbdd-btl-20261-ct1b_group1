@@ -1,9 +1,6 @@
 package com.example.dattuadulich
 
 import android.content.Intent
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,32 +18,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-class ExploreActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            ExploreScreen()
-        }
-    }
-}
+import androidx.navigation.NavHostController
 
 @Composable
-fun ExploreScreen() {
+fun ExploreScreen(navController: NavHostController) {
 
     val context = LocalContext.current
 
-    // ===== Danh sách địa điểm =====
-    // Có thể lấy description giống MainActivity
     val destinations = listOf(
 
         Destination(
             name = "Đà Nẵng",
             imageRes = R.drawable.danang,
             bannerRes = R.drawable.banner_danang,
-
             description =
                 "Đà Nẵng là một trong những thành phố biển đẹp và đáng sống nhất Việt Nam."
         ),
@@ -55,7 +39,6 @@ fun ExploreScreen() {
             name = "Huế",
             imageRes = R.drawable.hue,
             bannerRes = R.drawable.banner_hue,
-
             description =
                 "Huế là thành phố cổ kính nổi tiếng với vẻ đẹp trầm mặc."
         ),
@@ -64,7 +47,6 @@ fun ExploreScreen() {
             name = "Hà Nội",
             imageRes = R.drawable.hanoi,
             bannerRes = R.drawable.banner_hanoi,
-
             description =
                 "Hà Nội là thủ đô nghìn năm văn hiến của Việt Nam."
         ),
@@ -73,7 +55,6 @@ fun ExploreScreen() {
             name = "Quảng Ninh",
             imageRes = R.drawable.quangninh,
             bannerRes = R.drawable.banner_quangninh,
-
             description =
                 "Quảng Ninh nổi tiếng với kỳ quan thiên nhiên Vịnh Hạ Long."
         )
@@ -81,7 +62,6 @@ fun ExploreScreen() {
 
     Box {
 
-        // ===== Background =====
         Image(
             painter = painterResource(id = R.drawable.background_app),
             contentDescription = null,
@@ -89,20 +69,21 @@ fun ExploreScreen() {
             contentScale = ContentScale.Crop
         )
 
-        // ===== Overlay =====
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.3f))
         )
 
-        // ===== Nội dung =====
         Scaffold(
 
             containerColor = Color.Transparent,
 
             bottomBar = {
-                BottomMenuBar(selectedIndex = 1)
+                BottomMenuBar(
+                    selectedIndex = 1,
+                    navController = navController
+                )
             }
 
         ) { padding ->
@@ -113,7 +94,6 @@ fun ExploreScreen() {
                     .padding(16.dp)
             ) {
 
-                // ===== Tiêu đề =====
                 item {
 
                     Text(
@@ -133,7 +113,6 @@ fun ExploreScreen() {
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // ===== Danh sách =====
                 items(destinations) { destination ->
 
                     ExploreCard(
@@ -196,7 +175,6 @@ fun ExploreCard(
 
         Box {
 
-            // ===== Ảnh =====
             Image(
                 painter = painterResource(id = destination.imageRes),
                 contentDescription = destination.name,
@@ -204,14 +182,12 @@ fun ExploreCard(
                 modifier = Modifier.fillMaxSize()
             )
 
-            // ===== Overlay =====
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.35f))
             )
 
-            // ===== Tên địa điểm =====
             Text(
                 text = destination.name,
 
@@ -227,41 +203,9 @@ fun ExploreCard(
     }
 }
 
-
-
-
-
-
-
-
-// ================= PREVIEW =================
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewExploreScreen() {
 
-    ExploreScreen()
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewExploreCard() {
-
-    ExploreCard(
-
-        destination = Destination(
-
-            name = "Đà Nẵng",
-
-            imageRes = R.drawable.danang,
-
-            bannerRes = R.drawable.banner_danang,
-
-            description = "Mô tả"
-
-        ),
-
-        onClick = {}
-
-    )
+    Text("Preview")
 }

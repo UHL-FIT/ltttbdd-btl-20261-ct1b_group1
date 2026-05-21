@@ -35,6 +35,8 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.History
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +44,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            MainScreen()
+
+            val navController = rememberNavController()
+
+            NavHost(
+                navController = navController,
+                startDestination = "home"
+            ) {
+
+                composable("home") {
+                    MainScreen(navController)
+                }
+
+                composable("explore") {
+                    ExploreScreen(navController)
+                }
+            }
         }
     }
 }
@@ -59,7 +76,7 @@ data class BottomNavItem(
 )
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavHostController) {
 
     val context = LocalContext.current
 
@@ -160,7 +177,10 @@ fun MainScreen() {
         Scaffold(
             containerColor = Color.Transparent,
             bottomBar = {
-                BottomMenuBar(selectedIndex = 0)
+                BottomMenuBar(
+                    selectedIndex = 0,
+                    navController = navController
+                )
             }
         ) { padding ->
 
@@ -328,9 +348,11 @@ fun AutoSlidingBanner(
     }
 }
 @Composable
-fun BottomMenuBar(selectedIndex: Int) {
+fun BottomMenuBar(
+    selectedIndex: Int,
+    navController: NavHostController
+) {
 
-    val context = LocalContext.current
 
     val items = listOf(
 
@@ -375,12 +397,7 @@ fun BottomMenuBar(selectedIndex: Int) {
 
                             if(selectedIndex != 0) {
 
-                                context.startActivity(
-                                    Intent(
-                                        context,
-                                        MainActivity::class.java
-                                    )
-                                )
+                                navController.navigate("home")
                             }
                         }
 
@@ -388,12 +405,7 @@ fun BottomMenuBar(selectedIndex: Int) {
 
                             if(selectedIndex != 1) {
 
-                                context.startActivity(
-                                    Intent(
-                                        context,
-                                        ExploreActivity::class.java
-                                    )
-                                )
+                                navController.navigate("explore")
                             }
                         }
                     }
