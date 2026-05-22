@@ -397,17 +397,7 @@ fun BottomMenuBar(selectedIndex: Int) {
                                 )
                             }
                         }
-                        4 -> {
-                            if(selectedIndex != 4) {
 
-                                context.startActivity(
-                                    Intent(
-                                        context,
-                                        LogInActivity::class.java
-                                    )
-                                )
-                            }
-                        }
                     }
                 },
 
