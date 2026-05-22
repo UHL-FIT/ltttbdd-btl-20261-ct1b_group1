@@ -16,6 +16,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -33,7 +34,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -44,7 +44,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainScreen()
-
         }
     }
 }
@@ -54,6 +53,10 @@ data class Destination(
     val imageRes: Int,      // Ảnh card địa danh
     val bannerRes: Int,     // Ảnh banner trượt
     val description: String
+)
+data class BottomBarScreen(
+    val title: String,
+    val icon: ImageVector
 )
 @Preview
 @Composable
@@ -257,21 +260,15 @@ fun TopSection() {
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // BẮT BUỘC: Đảm bảo bạn đã có dòng này ở đầu hàm Composable chứa nút bấm
-        val context = LocalContext.current
-
         IconButton(
-            onClick = {
-                // chuyển sang màn hình Cài đặt
-                context.startActivity(android.content.Intent(context, SettingsActivity::class.java))
-            },
+            onClick = {},
             modifier = Modifier
                 .background(
                     Color.Black.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(50)
                 )
         ) {
-            Icon(Icons.Default.Settings, null, tint = Color.White)
+            Icon(Icons.Default.Language, null, tint = Color.White)
         }
     }
 }
@@ -331,6 +328,95 @@ fun AutoSlidingBanner(
         }
     }
 }
+@Composable
+fun BottomBarScreen(selectedIndex: Int) {
+
+    val context = LocalContext.current
+
+    val items = listOf(
+
+        BottomNavItem("Home", Icons.Default.Home),
+
+        BottomNavItem(
+            "Khám phá",
+            Icons.Default.Explore
+        ),
+
+        BottomNavItem(
+            "Ưu đãi",
+            Icons.Default.LocalOffer
+        ),
+
+        BottomNavItem(
+            "Lịch sử",
+            Icons.Default.History
+        ),
+
+        BottomNavItem(
+            "Tài khoản",
+            Icons.Default.Person
+        )
+    )
+
+    NavigationBar(
+        containerColor = Color(0xFFFFB74D)
+    ) {
+
+        items.forEachIndexed { index, item ->
+
+            NavigationBarItem(
+
+                selected = selectedIndex == index,
+
+                onClick = {
+
+                    when(index) {
+
+                        0 -> {
+
+                            if(selectedIndex != 0) {
+
+                                context.startActivity(
+                                    Intent(
+                                        context,
+                                        MainActivity::class.java
+                                    )
+                                )
+                            }
+                        }
+
+                        1 -> {
+
+                            if(selectedIndex != 1) {
+
+                                context.startActivity(
+                                    Intent(
+                                        context,
+                                        ExploreActivity::class.java
+                                    )
+                                )
+                            }
+                        }
+                    }
+                },
+
+                icon = {
+
+                    Icon(
+                        item.icon,
+                        contentDescription = item.title
+                    )
+                },
+
+                label = {
+
+                    Text(item.title)
+                }
+            )
+        }
+    }
+}
+
 @Composable
 fun DestinationCard(
     destination: Destination,
