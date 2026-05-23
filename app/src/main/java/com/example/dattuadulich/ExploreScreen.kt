@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
 
 @Composable
@@ -206,6 +207,6 @@ fun ExploreCard(
 @Preview(showBackground = true)
 @Composable
 fun PreviewExploreScreen() {
-
-    Text("Preview")
+    val navController = rememberNavController()
+    ExploreScreen(navController = navController)
 }

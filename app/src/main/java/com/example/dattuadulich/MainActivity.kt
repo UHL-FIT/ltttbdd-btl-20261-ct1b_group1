@@ -35,8 +35,12 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.History
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.*
+
+import com.example.dattuadulich.ui.screen.home.HomeScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.dattuadulich.navigation.AppNavigation
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,22 +48,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-
             val navController = rememberNavController()
-
-            NavHost(
-                navController = navController,
-                startDestination = "home"
-            ) {
-
-                composable("home") {
-                    MainScreen(navController)
-                }
-
-                composable("explore") {
-                    ExploreScreen(navController)
-                }
-            }
+            AppNavigation(navController = navController)
         }
     }
 }
@@ -74,9 +64,9 @@ data class BottomNavItem(
     val title: String,
     val icon: ImageVector
 )
-
+@Preview
 @Composable
-fun MainScreen(navController: NavHostController) {
+fun MainScreen() {
 
     val context = LocalContext.current
 
@@ -177,10 +167,7 @@ fun MainScreen(navController: NavHostController) {
         Scaffold(
             containerColor = Color.Transparent,
             bottomBar = {
-                BottomMenuBar(
-                    selectedIndex = 0,
-                    navController = navController
-                )
+                BottomMenuBar(selectedIndex = 0)
             }
         ) { padding ->
 
@@ -348,11 +335,9 @@ fun AutoSlidingBanner(
     }
 }
 @Composable
-fun BottomMenuBar(
-    selectedIndex: Int,
-    navController: NavHostController
-) {
+fun BottomMenuBar(selectedIndex: Int, navController: NavHostController? = null) {
 
+    val context = LocalContext.current
 
     val items = listOf(
 
@@ -394,20 +379,28 @@ fun BottomMenuBar(
                     when(index) {
 
                         0 -> {
-
-                            if(selectedIndex != 0) {
-
-                                navController.navigate("home")
+                            if (selectedIndex != 0) {
+                                if (navController != null) {
+                                    navController.navigate("home")
+                                } else {
+                                    context.startActivity(
+                                        Intent(
+                                            context,
+                                            MainActivity::class.java
+                                        )
+                                    )
+                                }
                             }
                         }
 
                         1 -> {
-
-                            if(selectedIndex != 1) {
-
-                                navController.navigate("explore")
+                            if (selectedIndex != 1) {
+                                if (navController != null) {
+                                    navController.navigate("explore")
+                                }
                             }
                         }
+
                     }
                 },
 
