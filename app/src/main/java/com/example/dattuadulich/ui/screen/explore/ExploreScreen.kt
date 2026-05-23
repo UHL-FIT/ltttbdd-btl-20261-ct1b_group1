@@ -1,4 +1,4 @@
-package com.example.dattuadulich.ui.screen.home
+package com.example.dattuadulich.ui.screen.explore
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -24,45 +24,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.dattuadulich.BottomMenuBar
 import com.example.dattuadulich.data.remote.dto.Main
 import com.example.dattuadulich.data.remote.dto.TourModel
 import com.example.dattuadulich.data.remote.dto.Weather
 import com.example.dattuadulich.data.remote.dto.WeatherResponse
 import com.example.dattuadulich.data.remote.dto.Wind
+import com.example.dattuadulich.ui.screen.home.HomeUiState
+import com.example.dattuadulich.ui.screen.home.HomeViewModel
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = viewModel(),
-    navController: NavHostController? = null
+fun ExploreScreen(
+    navController: NavController,
+    viewModel: HomeViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        bottomBar = {
-            BottomMenuBar(selectedIndex = 0, navController = navController)
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Box(modifier = Modifier.fillMaxSize().background(Color(0xFFF8FAFC)))
-
-            when (val state = uiState) {
-                is HomeUiState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                is HomeUiState.Error -> Text(state.message, modifier = Modifier.align(Alignment.Center), color = Color.Red)
-                is HomeUiState.Success -> HomeContent(state.weather, state.tours)
-            }
+    // Bỏ Scaffold chứa BottomMenuBar vì AppNavigation đã xử lý thanh menu dưới đáy rồi!
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF8FAFC))
+    ) {
+        when (val state = uiState) {
+            is HomeUiState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            is HomeUiState.Error -> Text(state.message, modifier = Modifier.align(Alignment.Center), color = Color.Red)
+            is HomeUiState.Success -> ExploreContent(state.weather, state.tours)
         }
     }
 }
 
 @Composable
-fun HomeContent(weather: WeatherResponse, tours: List<TourModel>) {
+fun ExploreContent(weather: WeatherResponse, tours: List<TourModel>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -84,7 +78,7 @@ fun HomeContent(weather: WeatherResponse, tours: List<TourModel>) {
         }
 
         item { WeatherHeaderCard(weather) }
-
+        
         item { PlanTripCard() }
 
         // --- LAYOUT DƯỚI (Danh sách tour) ---
@@ -130,19 +124,19 @@ fun WeatherHeaderCard(weather: WeatherResponse) {
                     Text("Cập nhật: 09:30", fontSize = 10.sp, color = Color.Gray)
                 }
             }
-
+            
             Spacer(modifier = Modifier.height(16.dp))
-
+            
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
                 WeatherInfoItem(Icons.Default.WaterDrop, "${weather.main.humidity}%")
                 WeatherInfoItem(Icons.Default.Air, "${weather.wind.speed} km/h")
             }
-
+            
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.5f))
-
+            
             Text("Thời tiết hôm nay", fontSize = 14.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-
+            
             LazyRow(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
                 items(6) { i ->
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -249,7 +243,7 @@ fun WeatherInfoItem(icon: androidx.compose.ui.graphics.vector.ImageVector, value
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PreviewHomeScreen() {
+fun PreviewExploreScreen() {
     val mockWeather = WeatherResponse(
         main = Main(temp = 28.0, humidity = 64),
         weather = listOf(Weather(description = "Nắng nhẹ", icon = "01d")),
@@ -262,6 +256,6 @@ fun PreviewHomeScreen() {
         TourModel(3, "Yên Tử – Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://i.ibb.co/fN0mP2Z/yentu.jpg", 4.7)
     )
     MaterialTheme {
-        HomeContent(weather = mockWeather, tours = mockTours)
+        ExploreContent(weather = mockWeather, tours = mockTours)
     }
 }
