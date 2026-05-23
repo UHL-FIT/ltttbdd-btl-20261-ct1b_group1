@@ -92,4 +92,3 @@ fun HorizontalPagerUI(navController: NavController) {
 fun HomeScreenPreview() {
     HomeScreen(navController = rememberNavController())
 }
-

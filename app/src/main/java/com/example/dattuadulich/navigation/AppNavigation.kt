@@ -1,3 +1,4 @@
+// điều hướng màn hình
 package com.example.dattuadulich.navigation
 
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,7 @@ fun AppNavigation() {
             composable(Screen.Explore.route) { ExploreScreen(navController) }
             composable(Screen.MyBooking.route) { MyBookingScreen() }
             composable(Screen.Setting.route) { SettingScreen() }
-            
+
             composable(Screen.Detail.route) { backStackEntry ->
                 val destinationName = backStackEntry.arguments?.getString("destinationName") ?: "Điểm đến"
                 DetailScreen(navController, destinationName)
