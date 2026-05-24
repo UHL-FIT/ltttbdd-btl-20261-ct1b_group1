@@ -102,11 +102,12 @@ fun ExploreContent(weather: WeatherResponse, tours: List<TourModel>) {
 @Composable
 fun WeatherHeaderCard(weather: WeatherResponse) {
     Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, Color.LightGray, RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant // Màu xám nhạt (Sáng) hoặc xám đậm (Tối)
+        ),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     AsyncImage(
