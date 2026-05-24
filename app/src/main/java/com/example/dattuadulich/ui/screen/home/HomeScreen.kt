@@ -6,7 +6,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -84,8 +83,6 @@ fun HorizontalPagerUI(navController: NavController) {
         }
     }
 }
-
-
 
 @Preview(showBackground = true, name = "Trang Chủ")
 @Composable

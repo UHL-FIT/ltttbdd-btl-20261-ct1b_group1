@@ -1,3 +1,4 @@
+//khai báo route app
 package com.example.dattuadulich.navigation
 
 import androidx.compose.material.icons.Icons
