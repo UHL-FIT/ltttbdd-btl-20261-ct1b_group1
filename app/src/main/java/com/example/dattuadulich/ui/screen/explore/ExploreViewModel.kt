@@ -1,5 +1,6 @@
-package com.example.dattuadulich.ui.screen.home
+package com.example.dattuadulich.ui.screen.explore
 
+import com.example.dattuadulich.ui.screen.home.HomeUiState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dattuadulich.data.remote.dto.TourModel
@@ -22,7 +23,7 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
             try {
-                val weather = repository.getWeather("Hanoi")
+                val weather = repository.getWeather("Quang Ninh")
                 val mockTours = listOf(
                     TourModel(1, "Hạ Long – Kỳ quan thiên nhiên", "Quảng Ninh", "1.890.000đ", "https://i.ibb.co/v4S8L8Y/halong.jpg", 4.8),
                     TourModel(2, "Bãi Cháy – Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://i.ibb.co/mS6p0v3/baichay.jpg", 4.6),
