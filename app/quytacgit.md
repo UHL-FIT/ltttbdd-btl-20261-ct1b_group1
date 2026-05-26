@@ -54,11 +54,13 @@ Tất cả thành viên tuân thủ 100% các quy tắc dưới đây.
      git commit -m "fix: Sua code theo review cua lead"
      git push origin feature/crud-category
      ```
-  4. PR sẽ tự động được cập nhật.                                                 Comment vào PR: _"@Penguninn (Đại)  Đã sửa xong rồi, check lại nhé."_
+  4. PR sẽ tự động được cập nhật.                                                 
+  5. Comment vào PR: _"@Penguninn (Đại)  Đã sửa xong rồi, check lại nhé."_
 
 ### TÌNH HUỐNG B: "Nhánh bị `behind` (tụt hậu) so với `develop`"
 
-- **Khi nào:** Bạn đang code thì M2 (hoặc M5) làm xong 1 task khác và đã được merge vào `develop`. Nhánh của bạn giờ đã cũ hơn `develop`.
+- **Khi nào:** Bạn đang code thì M2 (hoặc M5) làm xong 1 task khác và đã được merge vào `develop`. 
+- Nhánh của bạn giờ đã cũ hơn `develop`.
 - **Việc cần làm:** Bạn phải cập nhật code mới từ `develop` vào nhánh của mình **TRƯỚC KHI** tạo PR.
 - **LÀM:**
   1. Commit hết các thay đổi của bạn trên nhánh `feature/...` của bạn đang làm trước đã.
