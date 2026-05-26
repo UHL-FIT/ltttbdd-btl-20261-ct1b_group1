@@ -1,26 +1,27 @@
-// tạo bottom navigation
 package com.example.dattuadulich.navigation
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun BottomBarScreen(navController: NavController) {
-    // Theo dõi xem navController đang đứng ở địa chỉ nào
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    // Danh sách các màn hình cần gắn vào thanh menu dưới đáy (Đã bỏ Booking)
     val bottomBarScreens = listOf(Screen.Home, Screen.Explore, Screen.MyBooking, Screen.Setting)
 
-    // Bỏ điều kiện if, hiển thị thanh menu ở mọi nơi (kể cả DetailScreen)
-    NavigationBar(containerColor = Color(0xFF1E1E29), contentColor = Color.White) {
+    NavigationBar(
+        // Sử dụng màu surface từ Theme thay vì ép cứng
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ) {
         bottomBarScreens.forEach { screen ->
+            val isSelected = currentRoute == screen.route
+
             NavigationBarItem(
-                selected = currentRoute == screen.route,
+                selected = isSelected,
                 onClick = {
                     navController.navigate(screen.route) {
                         popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -28,14 +29,25 @@ fun BottomBarScreen(navController: NavController) {
                         restoreState = true
                     }
                 },
-                icon = { Icon(screen.icon, contentDescription = screen.title) },
+                icon = {
+                    Icon(
+                        imageVector = screen.icon,
+                        contentDescription = screen.title
+                    )
+                },
                 label = { Text(screen.title) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color(0xFFFFB74D), // Màu cam
-                    selectedTextColor = Color(0xFFFFB74D),
-                    unselectedIconColor = Color.Gray,
-                    unselectedTextColor = Color.Gray,
-                    indicatorColor = Color(0xFF2A2A38)
+                    // Màu khi được chọn: Nên dùng màu Primary của hệ thống hoặc màu cam bạn thích
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+
+                    // Màu khi KHÔNG được chọn: Dùng onSurfaceVariant để tự đổi theo sáng/tối
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+
+                    // Màu của vòng tròn bao quanh icon khi được chọn
+                    // secondaryContainer sẽ tự động đổi từ xám nhạt (Light) sang xám đậm (Dark)
+                    indicatorColor = MaterialTheme.colorScheme.secondaryContainer
                 )
             )
         }

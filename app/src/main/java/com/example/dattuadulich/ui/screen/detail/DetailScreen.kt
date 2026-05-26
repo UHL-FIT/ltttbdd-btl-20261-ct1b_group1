@@ -20,12 +20,15 @@ import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun DetailScreen(navController: NavController, destinationName: String) {
-    Column(modifier = Modifier.fillMaxSize().background(Color(0xFF12121A))) {
+    // FIX 1: Thay Color(0xFF12121A) bằng background của hệ thống
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Box(modifier = Modifier.fillMaxWidth().height(300.dp).background(
-            Brush.verticalGradient(listOf(Color(0xFF2A2A38), Color(0xFF1E1E29)))
+            // FIX 2: Thay màu gradient tối bằng màu surface của hệ thống
+            Brush.verticalGradient(listOf(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.surface))
         )) {
             IconButton(onClick = { navController.popBackStack() }, modifier = Modifier.padding(top = 32.dp, start = 16.dp)) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                // FIX 3: Thay Color.White bằng onSurface
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
             }
         }
 
@@ -34,26 +37,36 @@ fun DetailScreen(navController: NavController, destinationName: String) {
                 Text(
                     text = destinationName,
                     style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
-                    color = Color.White,
+                    // FIX 4: Thay Color.White bằng onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f)
                 )
                 Icon(Icons.Default.Star, contentDescription = "Rating", tint = Color(0xFFFFD700))
-                Text("4.9", color = Color.White, modifier = Modifier.padding(start = 4.dp))
+                // FIX 5: Thay Color.White bằng onBackground
+                Text("4.9", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(start = 4.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 "Một trong những điểm đến hấp dẫn nhất với khung cảnh thiên nhiên hùng vĩ và trải nghiệm văn hóa độc đáo. Các thành viên có thể tải ảnh thật vào đây sau.",
-                color = Color.LightGray,
+                // FIX 6: Thay Color.LightGray bằng onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge
             )
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = { /* Xử lý Đặt ngay */ },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFB74D)),
+                // FIX 7: Nên dùng primary của hệ thống thay vì màu cam cố định nếu muốn đổi theme mượt mà
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Đặt ngay", color = Color.Black, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                Text(
+                    "Đặt ngay",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
             }
         }
     }
