@@ -18,10 +18,7 @@ import com.example.dattuadulich.ui.theme.DattuadulichTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Kích hoạt trải nghiệm tràn viền (tùy chọn nhưng nên có)
         enableEdgeToEdge()
-
         setContent {
             // Khởi tạo ViewModel ở cấp cao nhất để quản lý State toàn app
             val settingViewModel: SettingViewModel = viewModel()
