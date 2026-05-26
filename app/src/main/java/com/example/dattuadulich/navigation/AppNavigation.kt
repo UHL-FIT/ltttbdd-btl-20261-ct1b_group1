@@ -2,6 +2,7 @@
 package com.example.dattuadulich.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,15 +14,15 @@ import com.example.dattuadulich.ui.screen.explore.ExploreScreen
 import com.example.dattuadulich.ui.screen.home.HomeScreen
 import com.example.dattuadulich.ui.screen.mybooking.MyBookingScreen
 import com.example.dattuadulich.ui.screen.setting.SettingScreen
+import com.example.dattuadulich.ui.screen.setting.SettingViewModel
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(settingViewModel: SettingViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = {
-            BottomBarScreen(navController = navController)
-        }
+        containerColor = MaterialTheme.colorScheme.background, // Thêm dòng này để chắc chắn
+        bottomBar = { BottomBarScreen(navController) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -31,7 +32,7 @@ fun AppNavigation() {
             composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.Explore.route) { ExploreScreen(navController) }
             composable(Screen.MyBooking.route) { MyBookingScreen() }
-            composable(Screen.Setting.route) { SettingScreen() }
+            composable(Screen.Setting.route) { SettingScreen(settingViewModel) }
 
             composable(Screen.Detail.route) { backStackEntry ->
                 val destinationName = backStackEntry.arguments?.getString("destinationName") ?: "Điểm đến"

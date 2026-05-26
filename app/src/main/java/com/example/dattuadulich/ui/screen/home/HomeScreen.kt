@@ -21,18 +21,21 @@ import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF12121A))) {
+    // SỬA: Thay Color(0xFF12121A) bằng background
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Địa điểm Việt Nam \uD83C\uDDFB\uD83C\uDDF3",
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = Color.White
+                // SỬA: Thay Color.White bằng onBackground
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(16.dp))
             SearchBarUI()
             Spacer(modifier = Modifier.height(24.dp))
-            Text("Địa điểm nổi bật", style = MaterialTheme.typography.titleLarge, color = Color.White)
+            // SỬA: Thay Color.White bằng onBackground
+            Text("Địa điểm nổi bật", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(modifier = Modifier.height(16.dp))
             HorizontalPagerUI(navController)
         }
@@ -44,14 +47,18 @@ fun SearchBarUI() {
     TextField(
         value = "",
         onValueChange = {},
-        placeholder = { Text("Bạn muốn đi đâu?", color = Color.Gray) },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
+        // SỬA: Thay Color.Gray bằng onSurfaceVariant
+        placeholder = { Text("Bạn muốn đi đâu?", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
         shape = RoundedCornerShape(24.dp),
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFF1E1E29),
-            focusedContainerColor = Color(0xFF2A2A38),
+            // SỬA: Thay các màu tím than/xám bằng surfaceVariant để tự đổi sáng tối
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
             focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
         ),
         modifier = Modifier.fillMaxWidth()
     )
@@ -71,11 +78,11 @@ fun HorizontalPagerUI(navController: NavController) {
             shape = RoundedCornerShape(24.dp)
         ) {
             Box(modifier = Modifier.fillMaxSize().background(
-                Brush.linearGradient(listOf(Color(0xFFFFB74D), Color(0xFFF57C00))) // Đổ gradient rất đẹp
+                Brush.linearGradient(listOf(Color(0xFFFFB74D), Color(0xFFF57C00))) // Giữ nguyên gradient vì đây là màu trang trí
             )) {
                 Text(
                     text = destinations[page],
-                    color = Color.White,
+                    color = Color.White, // Giữ màu trắng vì nền cam gradient luôn là màu đậm
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)
                 )
@@ -87,5 +94,6 @@ fun HorizontalPagerUI(navController: NavController) {
 @Preview(showBackground = true, name = "Trang Chủ")
 @Composable
 fun HomeScreenPreview() {
+    // Để preview hiển thị đúng màu bạn cần bọc vào Theme của bạn ở đây nếu có
     HomeScreen(navController = rememberNavController())
 }
