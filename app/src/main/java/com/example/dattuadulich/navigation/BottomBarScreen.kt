@@ -10,8 +10,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 @Composable
 fun BottomBarScreen(navController: NavController) {
     // Theo dõi xem navController đang đứng ở địa chỉ nào
-    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
-    val currentRoute = currentBackStackEntry?.destination?.route
+    val currentBackStackEntry = navController.currentBackStackEntryAsState().value // gtri thay doi sau moi lan chuyen man hinh
+    val currentRoute = currentBackStackEntry?.destination?.route // lay chinh xac tên diem diem dang đứng
 
     // Danh sách các màn hình cần gắn vào thanh menu dưới đáy (Đã bỏ Booking)
     val bottomBarScreens = listOf(Screen.Home, Screen.Explore, Screen.MyBooking, Screen.Setting)
