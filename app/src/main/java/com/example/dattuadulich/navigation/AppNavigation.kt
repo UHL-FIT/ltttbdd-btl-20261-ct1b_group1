@@ -15,6 +15,7 @@ import com.example.dattuadulich.ui.screen.home.HomeScreen
 import com.example.dattuadulich.ui.screen.mybooking.MyBookingScreen
 import com.example.dattuadulich.ui.screen.setting.SettingScreen
 import com.example.dattuadulich.ui.screen.setting.SettingViewModel
+import com.example.dattuadulich.ui.screen.booking.BookingScreen
 
 @Composable
 fun AppNavigation(settingViewModel: SettingViewModel) {
@@ -33,6 +34,7 @@ fun AppNavigation(settingViewModel: SettingViewModel) {
             composable(Screen.Explore.route) { ExploreScreen(navController) }
             composable(Screen.MyBooking.route) { MyBookingScreen() }
             composable(Screen.Setting.route) { SettingScreen(settingViewModel) }
+            composable(Screen.Booking.route) { BookingScreen(navController) }
 
             composable(Screen.Detail.route) { backStackEntry ->
                 val destinationName = backStackEntry.arguments?.getString("destinationName") ?: "Điểm đến"
