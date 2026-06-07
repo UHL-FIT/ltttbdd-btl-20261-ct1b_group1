@@ -16,5 +16,5 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object MyBooking : Screen("my_booking", "Lịch sử", Icons.Default.History)
     object Setting : Screen("setting", "Tài khoản", Icons.Default.Person)
     object Detail : Screen("detail/{destinationName}", "Chi tiết", Icons.Default.Explore)
-    object Booking : Screen("booking", "Đặt Tour", Icons.Default.ShoppingCart)
+    object Booking : Screen("booking/{destinationName}", "Đặt Tour", Icons.Default.ShoppingCart)
 }

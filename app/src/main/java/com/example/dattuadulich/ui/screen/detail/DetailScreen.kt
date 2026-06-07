@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import com.example.dattuadulich.navigation.Screen
 import kotlinx.coroutines.delay
 
 // 1. Model cho Chi tiết
@@ -99,7 +100,10 @@ fun DetailScreen(
                     color = MaterialTheme.colorScheme.surface
                 ) {
                     Button(
-                        onClick = { /* Chức năng đặt tour */ },
+                        onClick = {
+                            // Thay vì gọi Screen.Booking.route, ta truyền thẳng chuỗi URL có chứa tên:
+                            navController.navigate("booking/${state.name}")
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
