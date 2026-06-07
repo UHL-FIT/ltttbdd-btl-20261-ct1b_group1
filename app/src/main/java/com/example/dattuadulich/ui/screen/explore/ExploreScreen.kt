@@ -134,7 +134,7 @@ fun ExploreContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("Khám phá các tour nổi bật", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text("Xem tất cả >", fontSize = 12.sp, color = Color.Gray)
+
             }
         }
 

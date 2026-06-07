@@ -1,0 +1,42 @@
+{
+  "Vịnh Hạ Long": {
+    "giaTien": 1890000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=80"
+  },
+  "Hạ Long": {
+    "giaTien": 1890000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=80"
+  },
+  "Đà Nẵng": {
+    "giaTien": 3000000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1559592442-998818451124?w=800&q=80"
+  },
+  "Đà Lạt": {
+    "giaTien": 1500000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1589182397057-b16174fe924d?w=800&q=80"
+  },
+  "Hà Nội": {
+    "giaTien": 2000000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1555931466-17955c747d52?w=800&q=80"
+  },
+  "Thủ đô Hà Nội": {
+    "giaTien": 2000000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1555931466-17955c747d52?w=800&q=80"
+  },
+  "Bãi Cháy": {
+    "giaTien": 950000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80"
+  },
+  "Yên Tử": {
+    "giaTien": 850000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80"
+  },
+  "Cô Tô": {
+    "giaTien": 2200000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80"
+  },
+  "Bình Liêu": {
+    "giaTien": 1750000.0,
+    "anhDiaDiem": "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80"
+  }
+}
