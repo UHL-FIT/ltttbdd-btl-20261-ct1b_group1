@@ -1,27 +1,26 @@
 package com.example.dattuadulich.ui.screen.booking
 
-import android.content.Context
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dattuadulich.data.local.AppDatabase
 import com.example.dattuadulich.data.local.DatTourEntity
 import com.example.dattuadulich.repository.BookingRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
-
 // Cái rổ để hứng dữ liệu từ file JSON
 data class TourInfo(
     val giaTien: Double,
     val anhDiaDiem: String
 )
-class BookingViewModel(private val context: Context, private val repository: BookingRepository) : ViewModel() {
+class BookingViewModel(
+    app: Application,                            // ← đổi từ Context sang Application
+    private val repository: BookingRepository
+) : AndroidViewModel(app) {                      // ← đổi từ ViewModel sang AndroidViewModel
     private val _giaTien = MutableStateFlow(0.0)
     val giaTien: StateFlow<Double> = _giaTien.asStateFlow()
 
@@ -32,7 +31,10 @@ class BookingViewModel(private val context: Context, private val repository: Boo
     fun taiThongTinTour(tenThanhPho: String) {
         try {
             // mở file json
-            val jsonString = context.assets.open("bang_gia.json").bufferedReader().use { it.readText() }
+            val jsonString = getApplication<Application>().assets
+                .open("bang_gia.json")
+                .bufferedReader()
+                .use { it.readText() }
             // dịch json sang map của kotlin
             val type = object : TypeToken<Map<String, TourInfo>>() {}.type
             val bangGia: Map<String, TourInfo> = Gson().fromJson(jsonString, type)
