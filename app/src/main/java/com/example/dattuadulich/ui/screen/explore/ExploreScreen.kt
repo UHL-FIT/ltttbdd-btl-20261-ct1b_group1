@@ -1,149 +1,204 @@
 package com.example.dattuadulich.ui.screen.explore
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.dattuadulich.data.remote.dto.Main
 import com.example.dattuadulich.data.remote.dto.TourModel
-import com.example.dattuadulich.data.remote.dto.Weather
-import com.example.dattuadulich.data.remote.dto.WeatherResponse
-import com.example.dattuadulich.data.remote.dto.Wind
-import com.example.dattuadulich.ui.screen.home.HomeUiState
-import com.example.dattuadulich.ui.screen.home.HomeViewModel
 
 @Composable
 fun ExploreScreen(
     navController: NavController,
-    viewModel: HomeViewModel = viewModel()
+    viewModel: ExploreViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Bỏ Scaffold chứa BottomMenuBar vì AppNavigation đã xử lý thanh menu dưới đáy rồi!
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF8FAFC))
     ) {
-        when (val state = uiState) {
-            is HomeUiState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            is HomeUiState.Error -> Text(state.message, modifier = Modifier.align(Alignment.Center), color = Color.Red)
-            is HomeUiState.Success -> ExploreContent(state.weather, state.tours)
+        ExploreContent(
+            uiState = uiState,
+            onQueryChange = { viewModel.onSearchQueryChange(it) },
+            onSearchClick = { viewModel.searchWeather() },
+            onTourClick = { tourTitle ->
+                navController.navigate("detail/$tourTitle")
+            }
+        )
+
+        if (uiState.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }
 
 @Composable
-fun ExploreContent(weather: WeatherResponse, tours: List<TourModel>) {
+fun ExploreContent(
+    uiState: ExploreUiState,
+    onQueryChange: (String) -> Unit,
+    onSearchClick: () -> Unit,
+    onTourClick: (String) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // --- LAYOUT TRÊN (Khám phá + Thời tiết + Lên kế hoạch) ---
+        // --- HEADER: Search Province/City ---
         item {
+            Text("Khám phá", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(12.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Khám phá", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Text("Quảng Ninh", fontSize = 14.sp)
+                OutlinedTextField(
+                    value = uiState.searchQuery,
+                    onValueChange = onQueryChange,
+                    placeholder = { Text("Nhập tỉnh/thành phố") },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    trailingIcon = {
+                        if (uiState.searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { onQueryChange("") }) {
+                                Icon(Icons.Default.Clear, contentDescription = null)
+                            }
+                        }
+                    }
+                )
+                Button(
+                    onClick = onSearchClick,
+                    modifier = Modifier.height(56.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    Icon(Icons.Default.Search, contentDescription = null)
                 }
+            }
+            if (uiState.errorMessage != null) {
+                Text(
+                    text = uiState.errorMessage,
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 4.dp, start = 8.dp)
+                )
             }
         }
 
-        item { WeatherHeaderCard(weather) }
-        
-        item { PlanTripCard() }
+        // --- WEATHER CARD ---
+        item { WeatherCard(uiState.weather) }
 
-        // --- LAYOUT DƯỚI (Danh sách tour) ---
+        // --- TRAVEL SUGGESTION CARD ---
+        item {
+            Text(
+                "Gợi ý du lịch với thời tiết 10 ngày tới",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+        item { SuggestionCard(uiState.suggestion) }
+
+        // --- TOUR LIST ---
         item {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("Khám phá các tour nổi bật", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text("Xem tất cả >", fontSize = 12.sp, color = Color.Gray)
+
             }
         }
 
-        items(tours) { tour ->
-            TourItemCard(tour)
+        items(uiState.tours) { tour ->
+            TourItemCard(tour, onClick = { onTourClick(tour.title) })
         }
+        
+        item { Spacer(modifier = Modifier.height(16.dp)) }
     }
 }
 
 @Composable
-fun WeatherHeaderCard(weather: WeatherResponse) {
+fun WeatherCard(weather: WeatherData?) {
     Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant // Màu xám nhạt (Sáng) hoặc xám đậm (Tối)
-        ),
-        shape = RoundedCornerShape(16.dp)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
-    Column(modifier = Modifier.padding(16.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Column {
-                    AsyncImage(
-                        model = "https://openweathermap.org/img/wn/${weather.weather.firstOrNull()?.icon}@2x.png",
-                        contentDescription = null,
-                        modifier = Modifier.size(60.dp)
+                    Text(
+                        text = if (weather != null) "${weather.temp}°C" else "--°C",
+                        fontSize = 48.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                    Text("${weather.main.temp.toInt()}°C", fontSize = 36.sp, fontWeight = FontWeight.Bold)
-                    Text(weather.weather.firstOrNull()?.description ?: "Nắng nhẹ", color = Color.Gray)
+                    Text(
+                        text = weather?.description ?: "--",
+                        fontSize = 16.sp,
+                        color = Color.Gray
+                    )
                 }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text("Thứ Hai", fontWeight = FontWeight.Bold)
-                    Text("20/05/2024", fontSize = 12.sp)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Cập nhật: 09:30", fontSize = 10.sp, color = Color.Gray)
-                }
+                AsyncImage(
+                    model = if (weather != null) "https://openweathermap.org/img/wn/${weather.icon}@4x.png" else null,
+                    contentDescription = null,
+                    modifier = Modifier.size(80.dp),
+                    error = null // Transparent/Placeholder handled by null model
+                )
             }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                WeatherInfoItem(Icons.Default.WaterDrop, "${weather.main.humidity}%")
-                WeatherInfoItem(Icons.Default.Air, "${weather.wind.speed} km/h")
+                WeatherDetailItem(Icons.Default.WaterDrop, "Độ ẩm", if (weather != null) "${weather.humidity}%" else "--%")
+                WeatherDetailItem(Icons.Default.Air, "Sức gió", if (weather != null) "${weather.windSpeed} km/h" else "--,-- km/h")
             }
-            
-            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.5f))
-            
-            Text("Thời tiết hôm nay", fontSize = 14.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-                items(6) { i ->
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("${8 + i * 3}:00", fontSize = 10.sp, color = Color.Gray)
-                        Icon(Icons.Default.WbSunny, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color(0xFFFFA500))
-                        Text("2${6+i}°C", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp), color = Color.LightGray.copy(alpha = 0.5f))
+
+            Text("Dự báo 10 ngày tới", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                if (weather == null) {
+                    items(10) {
+                        ForecastItemUI(null)
+                    }
+                } else {
+                    items(weather.forecast) { item ->
+                        ForecastItemUI(item)
                     }
                 }
             }
@@ -152,111 +207,147 @@ fun WeatherHeaderCard(weather: WeatherResponse) {
 }
 
 @Composable
-fun PlanTripCard() {
+fun WeatherDetailItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.width(8.dp))
+        Column {
+            Text(label, fontSize = 10.sp, color = Color.Gray)
+            Text(value, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@Composable
+fun ForecastItemUI(item: ForecastItem?) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .background(Color.White.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+            .padding(8.dp)
+            .width(60.dp)
+    ) {
+        Text(item?.day ?: "--", fontSize = 11.sp, color = Color.DarkGray)
+        AsyncImage(
+            model = if (item != null) "https://openweathermap.org/img/wn/${item.icon}.png" else null,
+            contentDescription = null,
+            modifier = Modifier.size(32.dp)
+        )
+        Text(item?.temp ?: "--°C", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+fun SuggestionCard(suggestion: TravelSuggestion?) {
     Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, Color.LightGray, RoundedCornerShape(16.dp)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column {
+            Box(modifier = Modifier.height(180.dp).fillMaxWidth()) {
+                AsyncImage(
+                    model = suggestion?.imageUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .then(if (suggestion == null) Modifier.blur(10.dp) else Modifier),
+                    contentScale = ContentScale.Crop
+                )
+                if (suggestion == null) {
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.1f)))
+                }
+            }
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = suggestion?.cityName ?: "--",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = suggestion?.description ?: "--",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                if (suggestion != null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Surface(
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Lightbulb, null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = suggestion.reason,
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    }
+                } else {
+                    Text(
+                        text = "Hãy nhập tỉnh thành để nhận gợi ý du lịch phù hợp với thời tiết.",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(top = 8.dp),
+                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TourItemCard(tour: TourModel, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("Lên kế hoạch chuyến đi", fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                OutlinedTextField(
-                    value = "20/05/2024",
-                    onValueChange = {},
-                    label = { Text("Ngày đi", fontSize = 10.sp) },
-                    modifier = Modifier.weight(1f),
-                    leadingIcon = { Icon(Icons.Default.CalendarToday, null, modifier = Modifier.size(16.dp)) }
-                )
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, null, modifier = Modifier.padding(horizontal = 8.dp).size(20.dp))
-                OutlinedTextField(
-                    value = "23/05/2024",
-                    onValueChange = {},
-                    label = { Text("Ngày về", fontSize = 10.sp) },
-                    modifier = Modifier.weight(1f),
-                    leadingIcon = { Icon(Icons.Default.CalendarMonth, null, modifier = Modifier.size(16.dp)) }
-                )
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                border = BorderStroke(1.dp, Color.Black)
-            ) {
-                Icon(Icons.Default.Lightbulb, null, modifier = Modifier.size(20.dp), tint = Color.Black)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Gợi ý lịch trình & ngày nên đi", color = Color.Black)
-            }
-        }
-    }
-}
-
-@Composable
-fun TourItemCard(tour: TourModel) {
-    Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, Color.LightGray, RoundedCornerShape(12.dp)),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(modifier = Modifier.padding(8.dp)) {
+        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = tour.imageUrl,
                 contentDescription = null,
-                modifier = Modifier.size(100.dp).background(Color.LightGray, RoundedCornerShape(8.dp)),
+                modifier = Modifier
+                    .size(90.dp)
+                    .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
-            Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
-                Text(tour.title, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.LocationOn, null, modifier = Modifier.size(12.dp), tint = Color.Gray)
-                    Text(tour.location, fontSize = 11.sp, color = Color.Gray)
+            Column(modifier = Modifier.padding(start = 16.dp).weight(1f)) {
+                Text(tour.title, fontWeight = FontWeight.Bold, fontSize = 15.sp, maxLines = 1)
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
+                    Icon(Icons.Default.LocationOn, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                    Text(" " + tour.location, fontSize = 12.sp, color = Color.Gray)
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Schedule, null, modifier = Modifier.size(12.dp), tint = Color.Gray)
-                    Text(" 2 ngày 1 đêm", fontSize = 11.sp, color = Color.Gray)
+                Row(modifier = Modifier.padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text(tour.price, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(Icons.Default.Star, null, modifier = Modifier.size(14.dp), tint = Color(0xFFFFB300))
+                    Text(" ${tour.rating}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Star, null, modifier = Modifier.size(12.dp), tint = Color(0xFFFFB300))
-                    Text(" ${tour.rating} (120 đánh giá)", fontSize = 11.sp, color = Color.Gray)
-                }
-                Text(
-                    text = tour.price,
-                    modifier = Modifier.align(Alignment.End),
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
             }
         }
-    }
-}
-
-@Composable
-fun WeatherInfoItem(icon: androidx.compose.ui.graphics.vector.ImageVector, value: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(icon, null, modifier = Modifier.size(16.dp), tint = Color.Gray)
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(value, fontSize = 12.sp)
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewExploreScreen() {
-    val mockWeather = WeatherResponse(
-        main = Main(temp = 28.0, humidity = 64),
-        weather = listOf(Weather(description = "Nắng nhẹ", icon = "01d")),
-        wind = Wind(speed = 10.0),
-        name = "Quảng Ninh"
-    )
-    val mockTours = listOf(
-        TourModel(1, "Hạ Long – Kỳ quan thiên nhiên", "Quảng Ninh", "1.890.000đ", "https://i.ibb.co/v4S8L8Y/halong.jpg", 4.8),
-        TourModel(2, "Bãi Cháy – Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://i.ibb.co/mS6p0v3/baichay.jpg", 4.6),
-        TourModel(3, "Yên Tử – Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://i.ibb.co/fN0mP2Z/yentu.jpg", 4.7)
-    )
     MaterialTheme {
-        ExploreContent(weather = mockWeather, tours = mockTours)
+        ExploreContent(
+            uiState = ExploreUiState(),
+            onQueryChange = {},
+            onSearchClick = {},
+            onTourClick = {}
+        )
     }
 }

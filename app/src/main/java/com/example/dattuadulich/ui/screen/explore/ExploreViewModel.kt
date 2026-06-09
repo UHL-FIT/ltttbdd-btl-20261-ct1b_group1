@@ -1,0 +1,163 @@
+package com.example.dattuadulich.ui.screen.explore
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.dattuadulich.data.remote.dto.TourModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+class ExploreViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(ExploreUiState())
+    val uiState: StateFlow<ExploreUiState> = _uiState.asStateFlow()
+
+    init {
+        fetchTours()
+    }
+
+    private fun fetchTours() {
+        val mockTours = listOf(
+            TourModel(1, "Hạ Long – Kỳ quan thiên nhiên", "Quảng Ninh", "1.890.000đ", "https://i.ibb.co/v4S8L8Y/halong.jpg", 4.8),
+            TourModel(2, "Bãi Cháy – Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://i.ibb.co/mS6p0v3/baichay.jpg", 4.6),
+            TourModel(3, "Yên Tử – Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://i.ibb.co/fN0mP2Z/yentu.jpg", 4.7)
+        )
+        _uiState.value = _uiState.value.copy(tours = mockTours)
+    }
+
+    fun onSearchQueryChange(query: String) {
+        _uiState.value = _uiState.value.copy(searchQuery = query)
+    }
+
+    fun searchWeather() {
+        val city = _uiState.value.searchQuery.trim()
+        if (city.isEmpty()) {
+            fetchTours() // Reset to default tours if empty
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+            delay(800) 
+            val weatherData = getWeather(city)
+            if (weatherData != null) {
+                val suggestion = getSuggestion(weatherData)
+                // Filter tours based on searched city
+                val filteredTours = getAllMockTours().filter { 
+                    it.location.contains(city, ignoreCase = true) || city.contains(it.location, ignoreCase = true)
+                }
+                
+                _uiState.value = _uiState.value.copy(
+                    weather = weatherData,
+                    suggestion = suggestion,
+                    tours = if (filteredTours.isNotEmpty()) filteredTours else getAllMockTours().take(3),
+                    isLoading = false
+                )
+            } else {
+                _uiState.value = _uiState.value.copy(
+                    weather = null,
+                    suggestion = null,
+                    errorMessage = "Không tìm thấy tỉnh thành",
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    private fun getAllMockTours(): List<TourModel> {
+        return listOf(
+            TourModel(1, "Hà Nội - Tour Ẩm Thực Đêm", "Hà Nội", "650.000đ", "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800", 4.9),
+            TourModel(2, "Hà Nội - Khám phá Phố Cổ", "Hà Nội", "450.000đ", "https://images.unsplash.com/photo-1555931466-17955c747d52?w=800", 4.8),
+            TourModel(3, "Đà Nẵng - Bà Nà Hills Trọn Gói", "Đà Nẵng", "1.550.000đ", "https://images.unsplash.com/photo-1559592442-998818451124?w=800", 4.8),
+            TourModel(4, "Đà Nẵng - Ngắm Cầu Rồng & Chợ Đêm", "Đà Nẵng", "800.000đ", "https://images.unsplash.com/photo-1559592442-998818451124?w=800", 4.7),
+            TourModel(5, "Sài Gòn - City Tour & Bitexco", "TP HCM", "1.200.000đ", "https://images.unsplash.com/photo-1528127269322-539801943592?w=800", 4.7),
+            TourModel(6, "Sài Gòn - Thưởng Thức Bún Bò Huế", "TP HCM", "350.000đ", "https://images.unsplash.com/photo-1528127269322-539801943592?w=800", 4.6),
+            TourModel(7, "Hạ Long - Du Thuyền 5 Sao", "Quảng Ninh", "2.890.000đ", "https://i.ibb.co/v4S8L8Y/halong.jpg", 5.0),
+            TourModel(8, "Bãi Cháy - Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://i.ibb.co/mS6p0v3/baichay.jpg", 4.6),
+            TourModel(9, "Yên Tử - Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://i.ibb.co/fN0mP2Z/yentu.jpg", 4.7),
+            TourModel(10, "Đà Lạt - Check-in Thung Lũng Tình Yêu", "Đà Lạt", "1.100.000đ", "https://images.unsplash.com/photo-1589182397057-b16174fe924d?w=800", 4.9)
+        )
+    }
+
+    private suspend fun getWeather(city: String): WeatherData? {
+        val normalizedCity = city.lowercase()
+        return when {
+            normalizedCity.contains("hà nội") -> WeatherData(
+                temp = "28",
+                description = "Trời nhiều mây",
+                humidity = "65",
+                windSpeed = "12.5",
+                icon = "04d",
+                forecast = generateForecast("Trời mát")
+            )
+            normalizedCity.contains("đà nẵng") -> WeatherData(
+                temp = "32",
+                description = "Trời nắng đẹp",
+                humidity = "60",
+                windSpeed = "15.2",
+                icon = "01d",
+                forecast = generateForecast("Nắng")
+            )
+            normalizedCity.contains("hồ chí minh") || normalizedCity.contains("sài gòn") -> WeatherData(
+                temp = "34",
+                description = "Nắng nóng",
+                humidity = "55",
+                windSpeed = "10.0",
+                icon = "01d",
+                forecast = generateForecast("Nắng nóng")
+            )
+            normalizedCity.contains("quảng ninh") || normalizedCity.contains("hạ long") -> WeatherData(
+                temp = "30",
+                description = "Gió biển nhẹ",
+                humidity = "70",
+                windSpeed = "18.0",
+                icon = "02d",
+                forecast = generateForecast("Gió nhẹ")
+            )
+            normalizedCity.contains("đà lạt") -> WeatherData(
+                temp = "20",
+                description = "Trời se lạnh",
+                humidity = "80",
+                windSpeed = "8.5",
+                icon = "03d",
+                forecast = generateForecast("Lạnh")
+            )
+            else -> null
+        }
+    }
+
+    private fun generateForecast(baseDesc: String): List<ForecastItem> {
+        val days = listOf("Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật")
+        return List(10) { i ->
+            ForecastItem(
+                day = days[i % 7],
+                icon = if (baseDesc.contains("Nắng")) "01d" else "02d",
+                temp = "${18 + (i * 2 % 10)}°C"
+            )
+        }
+    }
+
+    private fun getSuggestion(weather: WeatherData): TravelSuggestion {
+        return when {
+            weather.description.contains("nắng") -> TravelSuggestion(
+                cityName = "Đà Nẵng",
+                description = "Thành phố của những cây cầu.",
+                reason = "Thời tiết nắng đẹp rất thích hợp để tắm biển Mỹ Khê và tham quan Bà Nà Hills.",
+                imageUrl = "https://images.unsplash.com/photo-1559592442-998818451124?w=800"
+            )
+            weather.description.contains("lạnh") || weather.temp.toInt() < 25 -> TravelSuggestion(
+                cityName = "Đà Lạt",
+                description = "Thành phố ngàn hoa.",
+                reason = "Không khí se lạnh thích hợp để thưởng thức cà phê và ngắm hoa dã quỳ.",
+                imageUrl = "https://images.unsplash.com/photo-1589182397057-b16174fe924d?w=800"
+            )
+            else -> TravelSuggestion(
+                cityName = "Hạ Long",
+                description = "Vịnh Hạ Long - Kỳ quan thế giới.",
+                reason = "Trời mát mẻ, biển êm, lý tưởng để đi du thuyền ngắm cảnh vịnh.",
+                imageUrl = "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800"
+            )
+        }
+    }
+}
