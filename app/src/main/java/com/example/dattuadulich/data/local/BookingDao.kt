@@ -1,11 +1,6 @@
 // nơi viết query database
 package com.example.dattuadulich.data.local
 
-<<<<<<< HEAD
-
-
-class BookingDao {
-=======
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -23,6 +18,4 @@ interface BookingDao {
 
     @Delete
     suspend fun deleteBooking(booking: DatTourEntity)
-
->>>>>>> develop
 }

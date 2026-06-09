@@ -19,7 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,8 +37,8 @@ fun ExploreScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8FAFC))
-    ) {
+            .background(MaterialTheme.colorScheme.background) // Thay Color(0xFFF8FAFC) bằng cái này
+    ){
         ExploreContent(
             uiState = uiState,
             onQueryChange = { viewModel.onSearchQueryChange(it) },
@@ -168,7 +167,7 @@ fun WeatherCard(weather: WeatherData?) {
                     Text(
                         text = weather?.description ?: "--",
                         fontSize = 16.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant // Sửa từ Color.Gray
                     )
                 }
                 AsyncImage(
@@ -309,9 +308,10 @@ fun TourItemCard(tour: TourModel, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(16.dp)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
@@ -323,16 +323,47 @@ fun TourItemCard(tour: TourModel, onClick: () -> Unit) {
                 contentScale = ContentScale.Crop
             )
             Column(modifier = Modifier.padding(start = 16.dp).weight(1f)) {
-                Text(tour.title, fontWeight = FontWeight.Bold, fontSize = 15.sp, maxLines = 1)
+                Text(
+                    text = tour.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    maxLines = 1,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
-                    Icon(Icons.Default.LocationOn, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
-                    Text(" " + tour.location, fontSize = 12.sp, color = Color.Gray)
+                    Icon(
+                        Icons.Default.LocationOn,
+                        null,
+                        modifier = Modifier.size(14.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = " " + tour.location,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
+
                 Row(modifier = Modifier.padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(tour.price, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
+                    // Giá tiền: Màu Primary thường đã được thiết kế tương phản tốt
+                    Text(
+                        text = tour.price,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 14.sp
+                    )
+
                     Spacer(modifier = Modifier.weight(1f))
+
+                    // Icon sao: Giữ màu vàng cam vì nó nổi trên cả 2 nền
                     Icon(Icons.Default.Star, null, modifier = Modifier.size(14.dp), tint = Color(0xFFFFB300))
-                    Text(" ${tour.rating}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = " ${tour.rating}",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
