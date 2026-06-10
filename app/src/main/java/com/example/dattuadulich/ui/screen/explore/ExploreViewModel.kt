@@ -91,7 +91,7 @@ class ExploreViewModel : ViewModel() {
                 icon = "04d",
                 forecast = generateForecast("Trời mát")
             )
-            normalizedCity.contains("đà nẵng") -> WeatherData(
+            normalizedCity.contains("đà nẵng") || normalizedCity.contains("hội an") -> WeatherData(
                 temp = "32",
                 description = "Trời nắng đẹp",
                 humidity = "60",
@@ -107,7 +107,7 @@ class ExploreViewModel : ViewModel() {
                 icon = "01d",
                 forecast = generateForecast("Nắng nóng")
             )
-            normalizedCity.contains("quảng ninh") || normalizedCity.contains("hạ long") -> WeatherData(
+            normalizedCity.contains("quảng ninh") || normalizedCity.contains("hạ long") || normalizedCity.contains("bãi cháy") || normalizedCity.contains("yên tử") || normalizedCity.contains("cô tô") || normalizedCity.contains("bình liêu") -> WeatherData(
                 temp = "30",
                 description = "Gió biển nhẹ",
                 humidity = "70",
@@ -115,13 +115,45 @@ class ExploreViewModel : ViewModel() {
                 icon = "02d",
                 forecast = generateForecast("Gió nhẹ")
             )
-            normalizedCity.contains("đà lạt") -> WeatherData(
-                temp = "20",
+            normalizedCity.contains("đà lạt") || normalizedCity.contains("sa pa") || normalizedCity.contains("mộc châu") -> WeatherData(
+                temp = "18",
                 description = "Trời se lạnh",
                 humidity = "80",
                 windSpeed = "8.5",
                 icon = "03d",
                 forecast = generateForecast("Lạnh")
+            )
+            normalizedCity.contains("nha trang") || normalizedCity.contains("mũi né") || normalizedCity.contains("vũng tàu") -> WeatherData(
+                temp = "31",
+                description = "Biển xanh nắng vàng",
+                humidity = "65",
+                windSpeed = "14.0",
+                icon = "01d",
+                forecast = generateForecast("Nắng biển")
+            )
+            normalizedCity.contains("phú quốc") || normalizedCity.contains("đảo phú quý") -> WeatherData(
+                temp = "30",
+                description = "Nắng nhẹ, gió mát",
+                humidity = "75",
+                windSpeed = "16.5",
+                icon = "02d",
+                forecast = generateForecast("Biển êm")
+            )
+            normalizedCity.contains("ninh bình") || normalizedCity.contains("huế") -> WeatherData(
+                temp = "27",
+                description = "Trời dịu mát",
+                humidity = "68",
+                windSpeed = "11.0",
+                icon = "04d",
+                forecast = generateForecast("Mát mẻ")
+            )
+            normalizedCity.contains("cần thơ") -> WeatherData(
+                temp = "33",
+                description = "Nắng ấm miền Tây",
+                humidity = "72",
+                windSpeed = "9.5",
+                icon = "02d",
+                forecast = generateForecast("Nắng ấm")
             )
             else -> null
         }

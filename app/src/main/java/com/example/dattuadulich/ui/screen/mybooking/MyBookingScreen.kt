@@ -35,7 +35,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.dattuadulich.data.local.DatTourEntity
 import java.text.NumberFormat
-import java.util.Locale
+import android.content.Intent
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.ui.platform.LocalContext
+import com.google.gson.Gson
 
 @Composable
 fun MyBookingScreen(viewModel: MyBookingViewModel) {
@@ -48,12 +51,38 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        Text(
-            "Lịch sử đặt chỗ",
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        val context = LocalContext.current
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                "Lịch sử đặt chỗ",
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
+            )
+
+            // Nút Xuất JSON
+            IconButton(
+                onClick = {
+                    // 1. Biến danh sách hóa đơn thành chuỗi JSON
+                    val jsonString = Gson().toJson(uiState.historyList)
+
+                    // 2. Mở bảng Chia sẻ của điện thoại
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, jsonString)
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, "Xuất dữ liệu JSON qua...")
+                    context.startActivity(shareIntent)
+                }
+            ) {
+                Icon(Icons.Default.Share, contentDescription = "Xuất JSON", tint = MaterialTheme.colorScheme.primary)
+            }
+        }
         // VẼ BẢNG THỐNG KÊ (Dùng các biến đã hứng ở trên)
         if (uiState.historyList.isNotEmpty()) {
             Card(

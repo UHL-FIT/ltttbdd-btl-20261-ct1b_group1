@@ -9,8 +9,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
-class HomeViewModel : ViewModel() {
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import org.json.JSONObject
+import java.text.NumberFormat
+import java.util.Locale
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = PlaceRepository()
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -20,34 +24,32 @@ class HomeViewModel : ViewModel() {
     }
 
     private suspend fun getCities(): List<City> {
-        delay(500)
-        return listOf(
-            City(
-                name = "Hà Nội",
-                description = "Thủ đô nghìn năm văn hiến với Hồ Gươm cổ kính.",
-                imageUrl = "https://images.unsplash.com/photo-1725550798518-f551648e4c10?w=1000"
-            ),
-            City(
-                name = "TP Hồ Chí Minh",
-                description = "Thành phố năng động với Landmark 81 rực rỡ.",
-                imageUrl = "https://plus.unsplash.com/premium_photo-1697729938237-680e72596e15?w=1000"
-            ),
-            City(
-                name = "Đà Nẵng",
-                description = "Thành phố đáng sống với Cầu Rồng biểu tượng.",
-                imageUrl = "https://images.unsplash.com/photo-1440694997168-8ae4033554c7?w=1000"
-            ),
-            City(
-                name = "Đà Lạt",
-                description = "Thành phố mộng mơ nổi tiếng với hồ Xuân Hương, đồi thông và những vườn hoa rực rỡ.",
-                imageUrl = "https://samtenhills.vn/wp-content/uploads/2024/11/kinh-nghiem-du-lich-da-lat-1-minh.jpg?w=1000"
-            ),
-            City(
-                name = "Hạ Long",
-                description = "Kỳ quan thiên nhiên thế giới với Vịnh Hạ Long hùng vĩ.",
-                imageUrl = "https://images.unsplash.com/photo-1764645859246-8c6db98330a7?w1000"
+        // 1. Đọc nội dung file bang_gia.json
+        val jsonString = getApplication<Application>().assets.open("bang_gia.json").bufferedReader().use { it.readText() }
+        val jsonObject = JSONObject(jsonString)
+
+        val cityList = mutableListOf<City>()
+
+        // 2. Quét qua từng địa điểm
+        for (cityName in jsonObject.keys()) {
+            val cityData = jsonObject.getJSONObject(cityName)
+            val imageUrl = cityData.getString("anhDiaDiem")
+            val price = cityData.getDouble("giaTien")
+
+            // Định dạng giá tiền (VD: 1.500.000 đ)
+            val formattedPrice = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(price)
+
+            // 3. Đóng gói vào danh sách
+            cityList.add(
+                City(
+                    name = cityName,
+                    description = "Giá tour tham khảo: $formattedPrice đ",
+                    imageUrl = imageUrl
+                )
             )
-        )
+        }
+
+        return cityList
     }
 
     fun fetchHomeData() {
