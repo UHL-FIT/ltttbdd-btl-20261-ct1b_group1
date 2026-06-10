@@ -28,6 +28,10 @@ import java.util.Locale
 fun MyBookingScreen(viewModel: MyBookingViewModel) {
     val historyList by viewModel.historyList.collectAsState()
 
+    val tongSoTour by viewModel.tongSoTour.collectAsState()
+    val tongTien by viewModel.tongTien.collectAsState()
+    val maxTour by viewModel.maxTour.collectAsState()
+    val minTour by viewModel.minTour.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +44,36 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 16.dp)
         )
+        // VẼ BẢNG THỐNG KÊ (Dùng các biến đã hứng ở trên)
+        if (historyList.isNotEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("📊 BẢNG TỔNG KẾT", fontWeight = FontWeight.Bold, color = Color(0xFF1565C0))
+                    Spacer(modifier = Modifier.height(8.dp))
 
+                    Text("• Tổng số tour đã đặt: $tongSoTour tour")
+
+                    val tongTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(tongTien)
+                    Text("• Tổng chi phí: $tongTienStr đ")
+
+                    // THAY VÌ dùng trực tiếp maxTour, minTour → hứng vào local val trước
+                    val maxTourLocal = maxTour  // local val → Kotlin có thể smart cast
+                    val minTourLocal = minTour
+
+                    if (maxTourLocal != null) {
+                        val maxTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(maxTourLocal.tongTien)
+                        Text("• Tour đắt nhất: ${maxTourLocal.tenDiaDiem} ($maxTienStr đ)")
+                    }
+                    if (minTourLocal != null) {
+                        val minTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(minTourLocal.tongTien)
+                        Text("• Tour rẻ nhất: ${minTourLocal.tenDiaDiem} ($minTienStr đ)")
+                    }
+                }
+            }
+        }
         if (historyList.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
@@ -88,7 +121,7 @@ fun BookingCard(hoaDon: DatTourEntity, onCancelClick: () -> Unit) {
                 Text("Người đặt: ${hoaDon.tenKhachHang} (${hoaDon.soNguoi} người)", fontSize = 14.sp)
                 Text("Ngày đi: ${hoaDon.ngayKhoiHanh}", fontSize = 14.sp)
 
-                val giaTienStr = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(hoaDon.tongTien)
+                val giaTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(hoaDon.tongTien)
                 Text("Tổng: $giaTienStr đ", color = Color(0xFFFF8C00), fontWeight = FontWeight.Bold, fontSize = 14.sp)
             }
 

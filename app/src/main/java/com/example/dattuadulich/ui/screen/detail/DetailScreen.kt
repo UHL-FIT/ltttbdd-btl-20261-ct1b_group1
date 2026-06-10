@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
-
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 @Composable
 fun DetailScreen(
     navController: NavController, 
@@ -80,7 +80,7 @@ fun DetailScreen(
                                 modifier = Modifier.fillMaxSize().background(Color.LightGray.copy(alpha = 0.3f)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator(modifier = Modifier.size(40.dp))
+                                Text("Đang tải lại ảnh...", fontSize = 12.sp, color = Color.Gray)
                             }
                         },
                         error = {
@@ -98,7 +98,11 @@ fun DetailScreen(
                             .padding(16.dp)
                             .background(Color.Black.copy(0.3f), RoundedCornerShape(12.dp))
                     ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.White)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Thay đổi ở đây
+                            contentDescription = "Quay lại",
+                            tint = Color.White
+                        )
                     }
                 }
 

@@ -1,6 +1,7 @@
 // điều hướng màn hình
 package com.example.dattuadulich.navigation
 
+import android.app.Application
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -48,11 +49,11 @@ fun AppNavigation(settingViewModel: SettingViewModel) {
             composable(Screen.Setting.route) { SettingScreen(settingViewModel) }
             composable(Screen.Booking.route) { backstackEntry ->
                 val destinationName = backstackEntry.arguments?.getString("destinationName") ?: "Điểm đến"
-
                 val context = LocalContext.current
                 val database = AppDatabase.getDatabase(context)
                 val repository = BookingRepository(database.bookingDao())
-                val bookingViewModel = remember { BookingViewModel(context, repository) }
+                val application = context.applicationContext as Application
+                val bookingViewModel = remember { BookingViewModel(application, repository) }
                 BookingScreen(navController, destinationName,bookingViewModel)
             }
 

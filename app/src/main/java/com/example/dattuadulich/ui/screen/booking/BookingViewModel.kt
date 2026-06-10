@@ -2,6 +2,7 @@ package com.example.dattuadulich.ui.screen.booking
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dattuadulich.data.local.DatTourEntity
 import com.example.dattuadulich.repository.BookingRepository
@@ -12,15 +13,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
+
 // Cái rổ để hứng dữ liệu từ file JSON
 data class TourInfo(
     val giaTien: Double,
     val anhDiaDiem: String
 )
 class BookingViewModel(
-    app: Application,                            // ← đổi từ Context sang Application
+    app: Application,
     private val repository: BookingRepository
-) : AndroidViewModel(app) {                      // ← đổi từ ViewModel sang AndroidViewModel
+) : AndroidViewModel(app) {
     private val _giaTien = MutableStateFlow(0.0)
     val giaTien: StateFlow<Double> = _giaTien.asStateFlow()
 
