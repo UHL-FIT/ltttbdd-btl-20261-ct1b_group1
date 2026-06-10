@@ -11,7 +11,17 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -30,7 +40,7 @@ import java.util.Locale
 @Composable
 fun MyBookingScreen(viewModel: MyBookingViewModel) {
     val uiState by viewModel.uiState.collectAsState()
-    var editingBooking by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<DatTourEntity?>(null) }
+    var editingBooking by remember { mutableStateOf<DatTourEntity?>(null) }
 
     Column(
         modifier = Modifier
@@ -148,7 +158,7 @@ fun BookingCard(hoaDon: DatTourEntity, onEditClick: () -> Unit, onCancelClick: (
             // Nút Sửa và Hủy
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 IconButton(onClick = onEditClick) {
-                    Icon(androidx.compose.material.icons.Icons.Default.Edit, contentDescription = "Sửa Tour", tint = Color(0xFF1976D2))
+                    Icon(Icons.Default.Edit, contentDescription = "Sửa Tour", tint = Color(0xFF1976D2))
                 }
                 IconButton(onClick = onCancelClick) {
                     Icon(Icons.Default.Delete, contentDescription = "Hủy Tour", tint = Color.Red)
@@ -165,16 +175,16 @@ fun UpdateBookingDialog(
     onDismiss: () -> Unit,
     onSave: (Int, String) -> Unit
 ) {
-    var numberOfPeople by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(hoaDon.soNguoi.toString()) }
-    var date by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(hoaDon.ngayKhoiHanh) }
+    var numberOfPeople by remember { mutableStateOf(hoaDon.soNguoi.toString()) }
+    var date by remember { mutableStateOf(hoaDon.ngayKhoiHanh) }
     
-    var showDatePicker by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
-    androidx.compose.runtime.LaunchedEffect(datePickerState.selectedDateMillis) {
+    LaunchedEffect(datePickerState.selectedDateMillis) {
         datePickerState.selectedDateMillis?.let {
-            val formatter = java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            date = formatter.format(java.util.Date(it))
+            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            date = formatter.format(Date(it))
         }
     }
 
@@ -187,7 +197,7 @@ fun UpdateBookingDialog(
                     value = numberOfPeople,
                     onValueChange = { numberOfPeople = it },
                     label = { Text("Số lượng người đi") },
-                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -198,7 +208,7 @@ fun UpdateBookingDialog(
                     readOnly = true,
                     trailingIcon = {
                         IconButton(onClick = { showDatePicker = true }) {
-                            Icon(androidx.compose.material.icons.Icons.Default.DateRange, contentDescription = "Chọn ngày")
+                            Icon(Icons.Default.DateRange, contentDescription = "Chọn ngày")
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
