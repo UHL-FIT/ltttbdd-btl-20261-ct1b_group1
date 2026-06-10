@@ -27,8 +27,6 @@ class BookingViewModel(
     val giaTien: StateFlow<Double> = _giaTien.asStateFlow()
 
     private  val _anhDiaDiem = MutableStateFlow("")
-    val anhDiaDiem: StateFlow<String> = _anhDiaDiem.asStateFlow()
-
     // Hàm đọc file Json
     fun taiThongTinTour(tenThanhPho: String) {
         try {
@@ -52,26 +50,28 @@ class BookingViewModel(
                 _anhDiaDiem.value = "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80"
             }
 
-            }catch (e: Exception) {
+        }catch (e: Exception) {
             e.printStackTrace()
         }
 
     }
     fun luuHoaDon(
         tenDiadiem: String,
+        anhDiaDiem: String,
         tenKhachHang: String,
         sdtKhachHang: String,
         ngayKhoiHanh: String,
         soNguoi: Int,
         onSucess: () -> Unit,
-    ){
+        ){
         viewModelScope.launch {
+
             val tongTien = giaTien.value * soNguoi
             //đóng gói entity
             val hoaDon = DatTourEntity(
                 maDatTour = UUID.randomUUID().toString(),
                 tenDiaDiem = tenDiadiem,
-                anhDiaDiem = anhDiaDiem.value,
+                anhDiaDiem =  anhDiaDiem,
                 tenKhachHang = tenKhachHang,
                 sdtKhachHang = sdtKhachHang,
                 ngayKhoiHanh = ngayKhoiHanh,
@@ -85,5 +85,4 @@ class BookingViewModel(
             onSucess()
         }
     }
-
 }

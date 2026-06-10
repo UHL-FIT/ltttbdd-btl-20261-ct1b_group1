@@ -10,6 +10,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -19,7 +21,7 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookingScreen(navController: NavController, destinationName: String, viewModel: BookingViewModel) {
+fun BookingScreen(navController: NavController, tourImage: String, destinationName: String, viewModel: BookingViewModel) {
     var name by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
@@ -41,7 +43,9 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF8FAFC)
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -49,7 +53,8 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF8FAFC))
+                //  Sửa màu nền chính: Dùng background của hệ thống
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -57,21 +62,40 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
             // Thẻ thông tin Tour
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                // 3. Sửa màu Card: Dùng surface thay vì Color.White
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                ),
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Tour: $destinationName", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(
+                        "Tour: $destinationName",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
                     // Format giá tiền cho đẹp (VD: 1890000.0 -> 1,890,000)
-                    val giaTienStr = java.text.NumberFormat.getNumberInstance(java.util.Locale.forLanguageTag("vi-VN")).format(giaTien)
-                    Text("Giá vé: $giaTienStr đ / người", color = Color(0xFFFF8C00), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+
+                    val giaTienStr = java.text.NumberFormat.getNumberInstance(java.util.Locale("vi", "VN")).format(giaTien)
+                    Text(
+                        "Giá vé: $giaTienStr đ / người",
+                        color = MaterialTheme.colorScheme.primary, // Hoặc Color(0xFFFF8C00) nếu màu cam đó đủ sáng
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
                 }
             }
 
-            Text("Thông tin  người đặt", fontWeight = FontWeight.Bold, fontSize = 16.sp, modifier = Modifier.padding(top = 8.dp))
-
+            Text(
+                "Thông tin người đặt",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(top = 8.dp),
+                color = MaterialTheme.colorScheme.onBackground // Tự động đổi Trắng/Đen
+            )
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -148,6 +172,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                     errorMessage = ""
                     viewModel.luuHoaDon(
                         tenDiadiem = destinationName,
+                        anhDiaDiem = tourImage,
                         tenKhachHang = name,
                         sdtKhachHang = phoneNumber,
                         ngayKhoiHanh = date,
@@ -176,3 +201,4 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
 //         BookingScreen(rememberNavController(), "Vịnh Hạ Long", /* cần mock viewModel ở đây */)
 //     }
 // }
+
