@@ -92,6 +92,8 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
+                }
+            }
 
             Text(
                 "Thông tin người đặt",
@@ -155,8 +157,6 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
-
-                    Text("Tổng cộng: $tongTienStr đ", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFFFF8C00))
 
             if (errorMessage.isNotEmpty()) {
                 Text(
