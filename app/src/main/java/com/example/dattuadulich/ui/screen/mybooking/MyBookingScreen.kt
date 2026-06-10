@@ -22,8 +22,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -87,28 +85,38 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
         if (uiState.historyList.isNotEmpty()) {
             Card(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+                colors = CardDefaults.cardColors(
+                    // Sử dụng màu Container của Theme (Tự đổi theo sáng/tối)
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("📊 BẢNG TỔNG KẾT", fontWeight = FontWeight.Bold, color = Color(0xFF1565C0))
+                    Text(
+                        "📊 BẢNG TỔNG KẾT",
+                        fontWeight = FontWeight.Bold,
+                        // Sử dụng màu chữ tương ứng với Container
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text("• Tổng số tour đã đặt: ${uiState.tongSoTour} tour")
+                    // Các dòng chữ bên dưới cũng nên dùng màu onSurface hoặc onPrimaryContainer
+                    val textColor = MaterialTheme.colorScheme.onPrimaryContainer
+
+                    Text("• Tổng số tour đã đặt: ${uiState.tongSoTour} tour", color = textColor)
 
                     val tongTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(uiState.tongTien)
-                    Text("• Tổng chi phí: $tongTienStr đ")
+                    Text("• Tổng chi phí: $tongTienStr đ", color = textColor)
 
-                    // THAY VÌ dùng trực tiếp maxTour, minTour → hứng vào local val trước
-                    val maxTourLocal = uiState.maxTour  // local val → Kotlin có thể smart cast
+                    val maxTourLocal = uiState.maxTour
                     val minTourLocal = uiState.minTour
 
                     if (maxTourLocal != null) {
                         val maxTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(maxTourLocal.tongTien)
-                        Text("• Tour đắt nhất: ${maxTourLocal.tenDiaDiem} ($maxTienStr đ)")
+                        Text("• Tour đắt nhất: ${maxTourLocal.tenDiaDiem} ($maxTienStr đ)", color = textColor)
                     }
                     if (minTourLocal != null) {
                         val minTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(minTourLocal.tongTien)
-                        Text("• Tour rẻ nhất: ${minTourLocal.tenDiaDiem} ($minTienStr đ)")
+                        Text("• Tour rẻ nhất: ${minTourLocal.tenDiaDiem} ($minTienStr đ)", color = textColor)
                     }
                 }
             }
