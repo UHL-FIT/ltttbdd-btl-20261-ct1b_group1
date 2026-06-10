@@ -1,8 +1,10 @@
 package com.example.dattuadulich.ui.screen.booking
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
@@ -10,24 +12,38 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookingScreen(navController: NavController, tourImage: String, destinationName: String, viewModel: BookingViewModel) {
+fun BookingScreen(navController: NavController, destinationName: String, viewModel: BookingViewModel) {
     var name by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
     var numberOfPeople by remember { mutableStateOf("1") }
     var errorMessage by remember { mutableStateOf("") }
     val giaTien by viewModel.giaTien.collectAsState()
+    val anhDiaDiem by viewModel.anhDiaDiem.collectAsState()
+
+    // DatePicker State
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+
+    LaunchedEffect(datePickerState.selectedDateMillis) {
+        datePickerState.selectedDateMillis?.let {
+            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            date = formatter.format(Date(it))
+        }
+    }
 
     LaunchedEffect(destinationName) {
         viewModel.taiThongTinTour(destinationName)
@@ -53,16 +69,13 @@ fun BookingScreen(navController: NavController, tourImage: String, destinationNa
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                //  Sửa màu nền chính: Dùng background của hệ thống
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Thẻ thông tin Tour
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                // 3. Sửa màu Card: Dùng surface thay vì Color.White
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 ),
@@ -77,12 +90,10 @@ fun BookingScreen(navController: NavController, tourImage: String, destinationNa
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    // Format giá tiền cho đẹp (VD: 1890000.0 -> 1,890,000)
-
-                    val giaTienStr = java.text.NumberFormat.getNumberInstance(java.util.Locale("vi", "VN")).format(giaTien)
+                    val giaTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN")).format(giaTien)
                     Text(
                         "Giá vé: $giaTienStr đ / người",
-                        color = MaterialTheme.colorScheme.primary, // Hoặc Color(0xFFFF8C00) nếu màu cam đó đủ sáng
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -94,8 +105,9 @@ fun BookingScreen(navController: NavController, tourImage: String, destinationNa
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 8.dp),
-                color = MaterialTheme.colorScheme.onBackground // Tự động đổi Trắng/Đen
+                color = MaterialTheme.colorScheme.onBackground
             )
+            
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -111,17 +123,35 @@ fun BookingScreen(navController: NavController, tourImage: String, destinationNa
                 label = { Text("Số điện thoại") },
                 leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
             )
 
-            OutlinedTextField(
-                value = date,
-                onValueChange = { date = it },
-                label = { Text("Ngày khởi hành (VD: 20/10/2024)") },
-                leadingIcon = { Icon(Icons.Default.CalendarToday, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
+            // Ô chọn Ngày (Bấm vào sẽ hiện Lịch)
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = date,
+                    onValueChange = { },
+                    label = { Text("Ngày khởi hành") },
+                    leadingIcon = { Icon(Icons.Default.CalendarToday, contentDescription = null) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    readOnly = true, // Không cho gõ chữ
+                    enabled = false, // Vô hiệu hóa để click xuyên qua Box
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                        disabledBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                )
+                // Lớp phủ trong suốt để bắt sự kiện click
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clickable { showDatePicker = true }
+                )
+            }
 
             OutlinedTextField(
                 value = numberOfPeople,
@@ -129,12 +159,12 @@ fun BookingScreen(navController: NavController, tourImage: String, destinationNa
                 label = { Text("Số lượng người đi") },
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // THÊM ĐOẠN NÀY VÀO NGAY TRÊN NÚT BẤM (Để hiện chữ màu đỏ nếu có lỗi)
             if (errorMessage.isNotEmpty()) {
                 Text(
                     text = errorMessage,
@@ -144,35 +174,30 @@ fun BookingScreen(navController: NavController, tourImage: String, destinationNa
             }
             Button(
                 onClick = {
-                    // CÁC CHỐT CHẶN BẢO VỆ:
-                    // 1. Kiểm tra Tên (Cơ bản là không được để trống)
+                    // CÁC CHỐT CHẶN BẢO VỆ ĐÃ ĐƯỢC ĐƠN GIẢN HÓA:
                     if (name.isBlank()) {
                         errorMessage = "Vui lòng nhập Họ và tên!"
                         return@Button
                     }
-                    // 2. Kiểm tra Số điện thoại (Phải bắt đầu bằng số 0 và đúng 10 chữ số)
-                    // Regex "^0\\d{9}$" nghĩa là: Chữ cái đầu là số 0, theo sau là đúng 9 chữ số.
-                    if (!phoneNumber.matches(Regex("^0\\d{9}$"))) {
+                    // Bàn phím số đã ngăn gõ chữ, chỉ cần kiểm tra đủ 10 số và bắt đầu bằng số 0
+                    if (phoneNumber.length != 10 || !phoneNumber.startsWith("0")) {
                         errorMessage = "Số điện thoại phải có 10 số và bắt đầu bằng số 0!"
                         return@Button
                     }
-                    // 3. Kiểm tra Ngày đi (Phải đúng định dạng DD/MM/YYYY)
-                    // Regex "^\\d{2}/\\d{2}/\\d{4}$" nghĩa là: 2 số / 2 số / 4 số.
-                    if (!date.matches(Regex("^\\d{2}/\\d{2}/\\d{4}$"))) {
-                        errorMessage = "Ngày khởi hành phải ghi đúng kiểu DD/MM/YYYY (VD: 20/10/2024)!"
+                    if (date.isBlank()) {
+                        errorMessage = "Vui lòng chọn ngày khởi hành!"
                         return@Button
                     }
-                    // 4. Kiểm tra Số người (Phải là số và > 0)
                     val soNguoiInt = numberOfPeople.toIntOrNull()
                     if (soNguoiInt == null || soNguoiInt <= 0) {
-                        errorMessage = "Số lượng người phải là số nguyên lớn hơn 0!"
+                        errorMessage = "Số lượng người phải lớn hơn 0!"
                         return@Button
                     }
-                    // Nếu qua được hết các chốt chặn thì xóa lỗi và cho phép lưu
+                    
                     errorMessage = ""
                     viewModel.luuHoaDon(
                         tenDiadiem = destinationName,
-                        anhDiaDiem = tourImage,
+                        anhDiaDiem = anhDiaDiem,
                         tenKhachHang = name,
                         sdtKhachHang = phoneNumber,
                         ngayKhoiHanh = date,
@@ -191,14 +216,24 @@ fun BookingScreen(navController: NavController, tourImage: String, destinationNa
                 Text("XÁC NHẬN ĐẶT TOUR", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
+
+        // Hộp thoại Chọn Ngày (DatePickerDialog)
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Xác nhận")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Hủy")
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
     }
 }
-
-// @Preview(showBackground = true)
-// @Composable
-// fun PreviewBookingScreen() {
-//     MaterialTheme {
-//         BookingScreen(rememberNavController(), "Vịnh Hạ Long", /* cần mock viewModel ở đây */)
-//     }
-// }
-

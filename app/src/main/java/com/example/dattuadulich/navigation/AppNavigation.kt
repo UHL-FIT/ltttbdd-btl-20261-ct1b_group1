@@ -51,21 +51,16 @@ fun AppNavigation(settingViewModel: SettingViewModel) {
             composable(Screen.Booking.route) { backstackEntry ->
                 // 1. Lấy destinationName từ tham số điều hướng
                 val destinationName = backstackEntry.arguments?.getString("destinationName") ?: "Điểm đến"
-
-                // 2. Lấy tourImage từ tham số điều hướng (Hãy đảm bảo route của bạn có tham số này)
-                val tourImage = backstackEntry.arguments?.getString("tourImage") ?: ""
-
                 val context = LocalContext.current
                 val database = AppDatabase.getDatabase(context)
                 val repository = BookingRepository(database.bookingDao())
                 val application = context.applicationContext as Application
 
-                val bookingViewModel = remember { BookingViewModel(context, repository) }
+                val bookingViewModel = remember { BookingViewModel(application, repository) }
 
-                // 3. Truyền ĐẦY ĐỦ 4 tham số theo đúng thứ tự
+                // 3. Truyền tham số
                 BookingScreen(
                     navController = navController,
-                    tourImage = tourImage,
                     destinationName = destinationName,
                     viewModel = bookingViewModel
                 )

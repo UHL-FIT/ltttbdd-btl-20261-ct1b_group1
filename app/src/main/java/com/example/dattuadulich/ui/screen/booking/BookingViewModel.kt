@@ -26,7 +26,9 @@ class BookingViewModel(
     private val _giaTien = MutableStateFlow(0.0)
     val giaTien: StateFlow<Double> = _giaTien.asStateFlow()
 
-    private  val _anhDiaDiem = MutableStateFlow("")
+    private val _anhDiaDiem = MutableStateFlow("")
+    val anhDiaDiem: StateFlow<String> = _anhDiaDiem.asStateFlow()
+
     // Hàm đọc file Json
     fun taiThongTinTour(tenThanhPho: String) {
         try {
