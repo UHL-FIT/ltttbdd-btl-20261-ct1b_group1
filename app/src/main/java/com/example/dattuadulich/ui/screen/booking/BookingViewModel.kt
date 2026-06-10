@@ -7,47 +7,42 @@ import com.example.dattuadulich.data.local.DatTourEntity
 import com.example.dattuadulich.repository.BookingRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-// Cái rổ để hứng dữ liệu từ file JSON
-data class TourInfo(
-    val giaTien: Double,
-    val anhDiaDiem: String
-)
-class BookingViewModel(private val context: Context, private val repository: BookingRepository) : ViewModel() {
-    private val _giaTien = MutableStateFlow(0.0)
-    val giaTien: StateFlow<Double> = _giaTien.asStateFlow()
+class BookingViewModel(
+    private val context: Context,
+    private val repository: BookingRepository
+) : ViewModel() {
 
-    private  val _anhDiaDiem = MutableStateFlow("")
-    // Hàm đọc file Json
+    private val _uiState = MutableStateFlow(BookingUiState())
+    val uiState: StateFlow<BookingUiState> = _uiState.asStateFlow()
+
     fun taiThongTinTour(tenThanhPho: String) {
-        try {
-            // mở file json
-            val jsonString = context.assets.open("bang_gia.json").bufferedReader().use { it.readText() }
-            // dịch json sang map của kotlin
-            val type = object : TypeToken<Map<String, TourInfo>>() {}.type
-            val bangGia: Map<String, TourInfo> = Gson().fromJson(jsonString, type)
-            //tra cứu tên thành phố
-            val thongTin = bangGia[tenThanhPho]
-            if(thongTin !=null)
-            {
-                _giaTien.value = thongTin.giaTien
-                _anhDiaDiem.value = thongTin.anhDiaDiem
-            } else {
-                // Nếu thành phố lạ chưa có trong JSON thì gán mặc định
-                _giaTien.value = 1000000.0
-                _anhDiaDiem.value = "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80"
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            try {
+                val jsonString = context.assets.open("bang_gia.json").bufferedReader().use { it.readText() }
+                val type = object : TypeToken<Map<String, TourInfo>>() {}.type
+                val bangGia: Map<String, TourInfo> = Gson().fromJson(jsonString, type)
+
+                val thongTin = bangGia[tenThanhPho]
+                if (thongTin != null) {
+                    _uiState.update { it.copy(
+                        giaTien = thongTin.giaTien,
+                        anhDiaDiem = thongTin.anhDiaDiem,
+                        isLoading = false
+                    )}
+                } else {
+                    _uiState.update { it.copy(giaTien = 1000000.0, isLoading = false) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = "Lỗi tải dữ liệu") }
             }
-
-        }catch (e: Exception) {
-            e.printStackTrace()
         }
-
     }
+
     fun luuHoaDon(
         tenDiadiem: String,
         anhDiaDiem: String,
@@ -55,16 +50,14 @@ class BookingViewModel(private val context: Context, private val repository: Boo
         sdtKhachHang: String,
         ngayKhoiHanh: String,
         soNguoi: Int,
-        onSucess: () -> Unit,
-        ){
+        onSucess: () -> Unit
+    ) {
         viewModelScope.launch {
-
-            val tongTien = giaTien.value * soNguoi
-            //đóng gói entity
+            val tongTien = _uiState.value.giaTien * soNguoi
             val hoaDon = DatTourEntity(
                 maDatTour = UUID.randomUUID().toString(),
                 tenDiaDiem = tenDiadiem,
-                anhDiaDiem =  anhDiaDiem,
+                anhDiaDiem = anhDiaDiem,
                 tenKhachHang = tenKhachHang,
                 sdtKhachHang = sdtKhachHang,
                 ngayKhoiHanh = ngayKhoiHanh,
@@ -72,9 +65,7 @@ class BookingViewModel(private val context: Context, private val repository: Boo
                 tongTien = tongTien,
                 ngayDat = System.currentTimeMillis()
             )
-            // lưu vào database
             repository.insertBooking(hoaDon)
-            //báo thành công
             onSucess()
         }
     }
