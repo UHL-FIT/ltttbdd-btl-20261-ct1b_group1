@@ -12,26 +12,31 @@ import kotlinx.coroutines.launch
 
 class MyBookingViewModel(private val repository: BookingRepository) : ViewModel() {
 
-    // 1. Tự động lôi danh sách hóa đơn từ Database lên
-    val historyList: StateFlow<List<DatTourEntity>> = repository.getAllBookings()
+    // 1. Tự động lôi danh sách hóa đơn từ Database lên và ánh xạ sang MyBookingUiState
+    val uiState: StateFlow<MyBookingUiState> = repository.getAllBookings()
+        .map { danhSach ->
+            MyBookingUiState(
+                historyList = danhSach,
+                tongSoTour = danhSach.size,
+                tongTien = danhSach.sumOf { it.tongTien },
+                maxTour = danhSach.maxByOrNull { it.tongTien },
+                minTour = danhSach.minByOrNull { it.tongTien }
+            )
+        }
         .stateIn(
             scope = viewModelScope,
             started = WhileSubscribed(5000),
-            initialValue = emptyList()
+            initialValue = MyBookingUiState()
         )
-    // THÊM ĐOẠN NÀY ĐỂ TỰ ĐỘNG TÍNH TOÁN KHI CÓ SỰ THAY ĐỔI
-    val tongSoTour = historyList.map { danhSach -> danhSach.size }
-        .stateIn(viewModelScope, WhileSubscribed(5000), 0)
 
-    val tongTien = historyList.map { danhSach -> danhSach.sumOf { it.tongTien } }
-        .stateIn(viewModelScope, WhileSubscribed(5000), 0.0)
+    // 2. Hàm Cập nhật Tour
+    fun capNhatHoaDon(hoaDon: DatTourEntity) {
+        viewModelScope.launch {
+            repository.updateBooking(hoaDon)
+        }
+    }
 
-    val maxTour = historyList.map { danhSach -> danhSach.maxByOrNull { it.tongTien } }
-        .stateIn(viewModelScope, WhileSubscribed(5000), null)
-
-    val minTour = historyList.map { danhSach -> danhSach.minByOrNull { it.tongTien } }
-        .stateIn(viewModelScope, WhileSubscribed(5000), null)
-    // 2. Hàm Hủy Tour
+    // 3. Hàm Hủy Tour
     fun xoaHoaDon(hoaDon: DatTourEntity) {
         viewModelScope.launch {
            repository.deleteBooking(hoaDon)

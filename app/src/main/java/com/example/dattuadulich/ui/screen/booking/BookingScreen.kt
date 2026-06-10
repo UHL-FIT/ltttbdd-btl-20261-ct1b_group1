@@ -31,8 +31,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
     var phoneNumber by remember { mutableStateOf("") }
     var numberOfPeople by remember { mutableStateOf("1") }
     var errorMessage by remember { mutableStateOf("") }
-    val giaTien by viewModel.giaTien.collectAsState()
-    val anhDiaDiem by viewModel.anhDiaDiem.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     // DatePicker State
     var showDatePicker by remember { mutableStateOf(false) }
@@ -90,7 +89,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    val giaTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN")).format(giaTien)
+                    val giaTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN")).format(uiState.giaTien)
                     Text(
                         "Giá vé: $giaTienStr đ / người",
                         color = MaterialTheme.colorScheme.primary,
@@ -172,6 +171,19 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                     fontWeight = FontWeight.Bold
                 )
             }
+            
+            // Tổng tiền tính nhanh (Tính năng xịn xò của Thành viên 2)
+            val soNguoiInt = numberOfPeople.toIntOrNull() ?: 0
+            val tongTien = uiState.giaTien * soNguoiInt
+            val tongTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN")).format(tongTien)
+
+            Text(
+                "Tổng cộng: $tongTienStr đ", 
+                fontWeight = FontWeight.Bold, 
+                fontSize = 18.sp, 
+                color = Color(0xFFFF8C00)
+            )
+
             Button(
                 onClick = {
                     // CÁC CHỐT CHẶN BẢO VỆ ĐÃ ĐƯỢC ĐƠN GIẢN HÓA:
@@ -197,7 +209,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                     errorMessage = ""
                     viewModel.luuHoaDon(
                         tenDiadiem = destinationName,
-                        anhDiaDiem = anhDiaDiem,
+                        anhDiaDiem = uiState.anhDiaDiem,
                         tenKhachHang = name,
                         sdtKhachHang = phoneNumber,
                         ngayKhoiHanh = date,

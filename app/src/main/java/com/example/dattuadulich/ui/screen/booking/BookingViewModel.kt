@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -23,39 +24,47 @@ class BookingViewModel(
     app: Application,
     private val repository: BookingRepository
 ) : AndroidViewModel(app) {
-    private val _giaTien = MutableStateFlow(0.0)
-    val giaTien: StateFlow<Double> = _giaTien.asStateFlow()
-
-    private val _anhDiaDiem = MutableStateFlow("")
-    val anhDiaDiem: StateFlow<String> = _anhDiaDiem.asStateFlow()
+    private val _uiState = MutableStateFlow(BookingUiState())
+    val uiState: StateFlow<BookingUiState> = _uiState.asStateFlow()
 
     // Hàm đọc file Json
     fun taiThongTinTour(tenThanhPho: String) {
-        try {
-            // mở file json
-            val jsonString = getApplication<Application>().assets
-                .open("bang_gia.json")
-                .bufferedReader()
-                .use { it.readText() }
-            // dịch json sang map của kotlin
-            val type = object : TypeToken<Map<String, TourInfo>>() {}.type
-            val bangGia: Map<String, TourInfo> = Gson().fromJson(jsonString, type)
-            //tra cứu tên thành phố
-            val thongTin = bangGia[tenThanhPho]
-            if(thongTin !=null)
-            {
-                _giaTien.value = thongTin.giaTien
-                _anhDiaDiem.value = thongTin.anhDiaDiem
-            } else {
-                // Nếu thành phố lạ chưa có trong JSON thì gán mặc định
-                _giaTien.value = 1000000.0
-                _anhDiaDiem.value = "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80"
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            try {
+                // mở file json
+                val jsonString = getApplication<Application>().assets
+                    .open("bang_gia.json")
+                    .bufferedReader()
+                    .use { it.readText() }
+                // dịch json sang map của kotlin
+                val type = object : TypeToken<Map<String, TourInfo>>() {}.type
+                val bangGia: Map<String, TourInfo> = Gson().fromJson(jsonString, type)
+                //tra cứu tên thành phố
+                val thongTin = bangGia[tenThanhPho]
+                if(thongTin != null) {
+                    _uiState.update { 
+                        it.copy(
+                            giaTien = thongTin.giaTien,
+                            anhDiaDiem = thongTin.anhDiaDiem,
+                            isLoading = false
+                        ) 
+                    }
+                } else {
+                    // Nếu thành phố lạ chưa có trong JSON thì gán mặc định
+                    _uiState.update { 
+                        it.copy(
+                            giaTien = 1000000.0,
+                            anhDiaDiem = "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80",
+                            isLoading = false
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(isLoading = false, errorMessage = "Lỗi tải dữ liệu") }
             }
-
-        }catch (e: Exception) {
-            e.printStackTrace()
         }
-
     }
     fun luuHoaDon(
         tenDiadiem: String,
@@ -68,7 +77,7 @@ class BookingViewModel(
         ){
         viewModelScope.launch {
 
-            val tongTien = giaTien.value * soNguoi
+            val tongTien = uiState.value.giaTien * soNguoi
             //đóng gói entity
             val hoaDon = DatTourEntity(
                 maDatTour = UUID.randomUUID().toString(),

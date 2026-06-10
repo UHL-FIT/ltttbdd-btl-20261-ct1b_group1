@@ -7,10 +7,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,12 +29,9 @@ import java.util.Locale
 
 @Composable
 fun MyBookingScreen(viewModel: MyBookingViewModel) {
-    val historyList by viewModel.historyList.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    var editingBooking by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<DatTourEntity?>(null) }
 
-    val tongSoTour by viewModel.tongSoTour.collectAsState()
-    val tongTien by viewModel.tongTien.collectAsState()
-    val maxTour by viewModel.maxTour.collectAsState()
-    val minTour by viewModel.minTour.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +45,7 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
         // VẼ BẢNG THỐNG KÊ (Dùng các biến đã hứng ở trên)
-        if (historyList.isNotEmpty()) {
+        if (uiState.historyList.isNotEmpty()) {
             Card(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
@@ -54,14 +54,14 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
                     Text("📊 BẢNG TỔNG KẾT", fontWeight = FontWeight.Bold, color = Color(0xFF1565C0))
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text("• Tổng số tour đã đặt: $tongSoTour tour")
+                    Text("• Tổng số tour đã đặt: ${uiState.tongSoTour} tour")
 
-                    val tongTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(tongTien)
+                    val tongTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(uiState.tongTien)
                     Text("• Tổng chi phí: $tongTienStr đ")
 
                     // THAY VÌ dùng trực tiếp maxTour, minTour → hứng vào local val trước
-                    val maxTourLocal = maxTour  // local val → Kotlin có thể smart cast
-                    val minTourLocal = minTour
+                    val maxTourLocal = uiState.maxTour  // local val → Kotlin có thể smart cast
+                    val minTourLocal = uiState.minTour
 
                     if (maxTourLocal != null) {
                         val maxTienStr = NumberFormat.getNumberInstance(Locale.forLanguageTag("vi-VN")).format(maxTourLocal.tongTien)
@@ -74,7 +74,7 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
                 }
             }
         }
-        if (historyList.isEmpty()) {
+        if (uiState.historyList.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     "Bạn chưa có chuyến đi nào gần đây.",
@@ -83,19 +83,39 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
             }
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                items(historyList) { hoaDon ->
+                items(uiState.historyList) { hoaDon ->
                     BookingCard(
                         hoaDon = hoaDon,
+                        onEditClick = { editingBooking = hoaDon },
                         onCancelClick = { viewModel.xoaHoaDon(hoaDon) }
                     )
                 }
             }
         }
     }
+
+    // Hiển thị Dialog nếu đang chọn 1 hóa đơn để sửa
+    editingBooking?.let { hoaDon ->
+        UpdateBookingDialog(
+            hoaDon = hoaDon,
+            onDismiss = { editingBooking = null },
+            onSave = { updatedSoNguoi, updatedNgay ->
+                val donGia = hoaDon.tongTien / hoaDon.soNguoi
+                val newTongTien = donGia * updatedSoNguoi
+                val updatedHoaDon = hoaDon.copy(
+                    soNguoi = updatedSoNguoi,
+                    ngayKhoiHanh = updatedNgay,
+                    tongTien = newTongTien
+                )
+                viewModel.capNhatHoaDon(updatedHoaDon)
+                editingBooking = null
+            }
+        )
+    }
 }
 
 @Composable
-fun BookingCard(hoaDon: DatTourEntity, onCancelClick: () -> Unit) {
+fun BookingCard(hoaDon: DatTourEntity, onEditClick: () -> Unit, onCancelClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -125,10 +145,96 @@ fun BookingCard(hoaDon: DatTourEntity, onCancelClick: () -> Unit) {
                 Text("Tổng: $giaTienStr đ", color = Color(0xFFFF8C00), fontWeight = FontWeight.Bold, fontSize = 14.sp)
             }
 
-            // Nút Hủy
-            IconButton(onClick = onCancelClick) {
-                Icon(Icons.Default.Delete, contentDescription = "Hủy Tour", tint = Color.Red)
+            // Nút Sửa và Hủy
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                IconButton(onClick = onEditClick) {
+                    Icon(androidx.compose.material.icons.Icons.Default.Edit, contentDescription = "Sửa Tour", tint = Color(0xFF1976D2))
+                }
+                IconButton(onClick = onCancelClick) {
+                    Icon(Icons.Default.Delete, contentDescription = "Hủy Tour", tint = Color.Red)
+                }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UpdateBookingDialog(
+    hoaDon: DatTourEntity,
+    onDismiss: () -> Unit,
+    onSave: (Int, String) -> Unit
+) {
+    var numberOfPeople by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(hoaDon.soNguoi.toString()) }
+    var date by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(hoaDon.ngayKhoiHanh) }
+    
+    var showDatePicker by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+
+    androidx.compose.runtime.LaunchedEffect(datePickerState.selectedDateMillis) {
+        datePickerState.selectedDateMillis?.let {
+            val formatter = java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            date = formatter.format(java.util.Date(it))
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Cập nhật Hóa Đơn", fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = numberOfPeople,
+                    onValueChange = { numberOfPeople = it },
+                    label = { Text("Số lượng người đi") },
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = date,
+                    onValueChange = { },
+                    label = { Text("Ngày khởi hành (Nhấn icon lịch)") },
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { showDatePicker = true }) {
+                            Icon(androidx.compose.material.icons.Icons.Default.DateRange, contentDescription = "Chọn ngày")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                val soNguoiInt = numberOfPeople.toIntOrNull() ?: 1
+                onSave(soNguoiInt, date)
+            }) {
+                Text("Lưu Thay Đổi")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Hủy")
+            }
+        }
+    )
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Chọn")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Hủy")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
 }
