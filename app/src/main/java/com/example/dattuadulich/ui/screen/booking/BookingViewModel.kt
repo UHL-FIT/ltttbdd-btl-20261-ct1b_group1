@@ -66,6 +66,7 @@ class BookingViewModel(
             }
         }
     }
+
     fun luuHoaDon(
         tenDiadiem: String,
         anhDiaDiem: String,
@@ -73,8 +74,8 @@ class BookingViewModel(
         sdtKhachHang: String,
         ngayKhoiHanh: String,
         soNguoi: Int,
-        onSucess: () -> Unit,
-        ){
+        onSucess: () -> Unit
+    ) {
         viewModelScope.launch {
 
             val tongTien = uiState.value.giaTien * soNguoi
@@ -82,7 +83,7 @@ class BookingViewModel(
             val hoaDon = DatTourEntity(
                 maDatTour = UUID.randomUUID().toString(),
                 tenDiaDiem = tenDiadiem,
-                anhDiaDiem =  anhDiaDiem,
+                anhDiaDiem = anhDiaDiem,
                 tenKhachHang = tenKhachHang,
                 sdtKhachHang = sdtKhachHang,
                 ngayKhoiHanh = ngayKhoiHanh,
@@ -90,9 +91,7 @@ class BookingViewModel(
                 tongTien = tongTien,
                 ngayDat = System.currentTimeMillis()
             )
-            // lưu vào database
             repository.insertBooking(hoaDon)
-            //báo thành công
             onSucess()
         }
     }

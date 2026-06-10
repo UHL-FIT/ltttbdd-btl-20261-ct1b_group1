@@ -3,6 +3,7 @@ package com.example.dattuadulich.ui.screen.booking
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -56,12 +57,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
+                }
             )
         }
     ) { paddingValues ->
@@ -96,8 +92,6 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
-                }
-            }
 
             Text(
                 "Thông tin người đặt",
@@ -162,7 +156,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+                    Text("Tổng cộng: $tongTienStr đ", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFFFF8C00))
 
             if (errorMessage.isNotEmpty()) {
                 Text(
