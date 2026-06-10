@@ -85,7 +85,8 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    val giaTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN")).format(uiState.giaTien)
+                    val giaTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN"))
+                        .format(uiState.giaTien)
                     Text(
                         "Giá vé: $giaTienStr đ / người",
                         color = MaterialTheme.colorScheme.primary,
@@ -93,152 +94,170 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                         fontSize = 16.sp
                     )
 
-            Text(
-                "Thông tin người đặt",
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(top = 8.dp),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Họ và tên") },
-                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            OutlinedTextField(
-                value = phoneNumber,
-                onValueChange = { phoneNumber = it },
-                label = { Text("Số điện thoại") },
-                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-            )
-
-            // Ô chọn Ngày (Bấm vào sẽ hiện Lịch)
-            Box(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
-                    value = date,
-                    onValueChange = { },
-                    label = { Text("Ngày khởi hành") },
-                    leadingIcon = { Icon(Icons.Default.CalendarToday, contentDescription = null) },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    readOnly = true, // Không cho gõ chữ
-                    enabled = false, // Vô hiệu hóa để click xuyên qua Box
-                    colors = OutlinedTextFieldDefaults.colors(
-                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                        disabledBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    Text(
+                        "Thông tin người đặt",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(top = 8.dp),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
-                )
-                // Lớp phủ trong suốt để bắt sự kiện click
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .clickable { showDatePicker = true }
-                )
-            }
 
-            OutlinedTextField(
-                value = numberOfPeople,
-                onValueChange = { numberOfPeople = it },
-                label = { Text("Số lượng người đi") },
-                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-                    Text("Tổng cộng: $tongTienStr đ", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFFFF8C00))
-
-            if (errorMessage.isNotEmpty()) {
-                Text(
-                    text = errorMessage,
-                    color = Color.Red,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            
-            // Tổng tiền tính nhanh (Tính năng xịn xò của Thành viên 2)
-            val soNguoiInt = numberOfPeople.toIntOrNull() ?: 0
-            val tongTien = uiState.giaTien * soNguoiInt
-            val tongTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN")).format(tongTien)
-
-            Text(
-                "Tổng cộng: $tongTienStr đ", 
-                fontWeight = FontWeight.Bold, 
-                fontSize = 18.sp, 
-                color = Color(0xFFFF8C00)
-            )
-
-            Button(
-                onClick = {
-                    // CÁC CHỐT CHẶN BẢO VỆ ĐÃ ĐƯỢC ĐƠN GIẢN HÓA:
-                    if (name.isBlank()) {
-                        errorMessage = "Vui lòng nhập Họ và tên!"
-                        return@Button
-                    }
-                    // Bàn phím số đã ngăn gõ chữ, chỉ cần kiểm tra đủ 10 số và bắt đầu bằng số 0
-                    if (phoneNumber.length != 10 || !phoneNumber.startsWith("0")) {
-                        errorMessage = "Số điện thoại phải có 10 số và bắt đầu bằng số 0!"
-                        return@Button
-                    }
-                    if (date.isBlank()) {
-                        errorMessage = "Vui lòng chọn ngày khởi hành!"
-                        return@Button
-                    }
-                    val soNguoiInt = numberOfPeople.toIntOrNull()
-                    if (soNguoiInt == null || soNguoiInt <= 0) {
-                        errorMessage = "Số lượng người phải lớn hơn 0!"
-                        return@Button
-                    }
-                    
-                    errorMessage = ""
-                    viewModel.luuHoaDon(
-                        tenDiadiem = destinationName,
-                        anhDiaDiem = uiState.anhDiaDiem,
-                        tenKhachHang = name,
-                        sdtKhachHang = phoneNumber,
-                        ngayKhoiHanh = date,
-                        soNguoi = soNguoiInt,
-                        onSucess = {
-                            navController.popBackStack()
-                        }
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text("Họ và tên") },
+                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
                     )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8C00)),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text("XÁC NHẬN ĐẶT TOUR", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            }
-        }
 
-        // Hộp thoại Chọn Ngày (DatePickerDialog)
-        if (showDatePicker) {
-            DatePickerDialog(
-                onDismissRequest = { showDatePicker = false },
-                confirmButton = {
-                    TextButton(onClick = { showDatePicker = false }) {
-                        Text("Xác nhận")
+                    OutlinedTextField(
+                        value = phoneNumber,
+                        onValueChange = { phoneNumber = it },
+                        label = { Text("Số điện thoại") },
+                        leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                    )
+
+                    // Ô chọn Ngày (Bấm vào sẽ hiện Lịch)
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        OutlinedTextField(
+                            value = date,
+                            onValueChange = { },
+                            label = { Text("Ngày khởi hành") },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Default.CalendarToday,
+                                    contentDescription = null
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            readOnly = true, // Không cho gõ chữ
+                            enabled = false, // Vô hiệu hóa để click xuyên qua Box
+                            colors = OutlinedTextFieldDefaults.colors(
+                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                disabledBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        )
+                        // Lớp phủ trong suốt để bắt sự kiện click
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable { showDatePicker = true }
+                        )
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showDatePicker = false }) {
-                        Text("Hủy")
+
+                    OutlinedTextField(
+                        value = numberOfPeople,
+                        onValueChange = { numberOfPeople = it },
+                        label = { Text("Số lượng người đi") },
+                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+
+                    Text(
+                        "Tổng cộng: $tongTienStr đ",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color(0xFFFF8C00)
+                    )
+
+                    if (errorMessage.isNotEmpty()) {
+                        Text(
+                            text = errorMessage,
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    // Tổng tiền tính nhanh (Tính năng xịn xò của Thành viên 2)
+                    val soNguoiInt = numberOfPeople.toIntOrNull() ?: 0
+                    val tongTien = uiState.giaTien * soNguoiInt
+                    val tongTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN"))
+                        .format(tongTien)
+
+                    Text(
+                        "Tổng cộng: $tongTienStr đ",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color(0xFFFF8C00)
+                    )
+
+                    Button(
+                        onClick = {
+                            // CÁC CHỐT CHẶN BẢO VỆ ĐÃ ĐƯỢC ĐƠN GIẢN HÓA:
+                            if (name.isBlank()) {
+                                errorMessage = "Vui lòng nhập Họ và tên!"
+                                return@Button
+                            }
+                            // Bàn phím số đã ngăn gõ chữ, chỉ cần kiểm tra đủ 10 số và bắt đầu bằng số 0
+                            if (phoneNumber.length != 10 || !phoneNumber.startsWith("0")) {
+                                errorMessage = "Số điện thoại phải có 10 số và bắt đầu bằng số 0!"
+                                return@Button
+                            }
+                            if (date.isBlank()) {
+                                errorMessage = "Vui lòng chọn ngày khởi hành!"
+                                return@Button
+                            }
+                            val soNguoiInt = numberOfPeople.toIntOrNull()
+                            if (soNguoiInt == null || soNguoiInt <= 0) {
+                                errorMessage = "Số lượng người phải lớn hơn 0!"
+                                return@Button
+                            }
+
+                            errorMessage = ""
+                            viewModel.luuHoaDon(
+                                tenDiadiem = destinationName,
+                                anhDiaDiem = uiState.anhDiaDiem,
+                                tenKhachHang = name,
+                                sdtKhachHang = phoneNumber,
+                                ngayKhoiHanh = date,
+                                soNguoi = soNguoiInt,
+                                onSucess = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8C00)),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            "XÁC NHẬN ĐẶT TOUR",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     }
                 }
-            ) {
-                DatePicker(state = datePickerState)
+
+                // Hộp thoại Chọn Ngày (DatePickerDialog)
+                if (showDatePicker) {
+                    DatePickerDialog(
+                        onDismissRequest = { showDatePicker = false },
+                        confirmButton = {
+                            TextButton(onClick = { showDatePicker = false }) {
+                                Text("Xác nhận")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showDatePicker = false }) {
+                                Text("Hủy")
+                            }
+                        }
+                    ) {
+                        DatePicker(state = datePickerState)
+                    }
+                }
             }
         }
     }
