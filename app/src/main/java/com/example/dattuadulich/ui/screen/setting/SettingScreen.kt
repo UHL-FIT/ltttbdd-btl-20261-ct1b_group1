@@ -25,7 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dattuadulich.ui.theme.DattuadulichTheme
 
 @Composable
-fun SettingScreen(viewModel: SettingViewModel = viewModel()) {
+fun SettingScreen(viewModel: SettingViewModel = viewModel(), navController: androidx.navigation.NavController? = null) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
@@ -175,6 +175,10 @@ fun SettingScreen(viewModel: SettingViewModel = viewModel()) {
                     Text("Phiên bản", fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground)
                     Text(uiState.appVersion, fontSize = 12.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                 }
+            }
+
+            ClickableSettingRow("Giới thiệu ứng dụng", "Thông tin về ứng dụng này") {
+                navController?.navigate(com.example.dattuadulich.navigation.Screen.About.route)
             }
 
             ClickableSettingRow("Đánh giá ứng dụng", "Ủng hộ 5 sao trên Store") {

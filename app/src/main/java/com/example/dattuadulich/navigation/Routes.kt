@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.ui.graphics.vector.ImageVector
 
 // Chứa danh sách các địa chỉ trong App
@@ -17,4 +18,5 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object Setting : Screen("setting", "Tài khoản", Icons.Default.Person)
     object Detail : Screen("detail/{destinationName}", "Chi tiết", Icons.Default.Explore)
     object Booking : Screen("booking/{destinationName}", "Đặt Tour", Icons.Default.ShoppingCart)
+    object About : Screen("about", "Giới thiệu", Icons.Default.Info)
 }

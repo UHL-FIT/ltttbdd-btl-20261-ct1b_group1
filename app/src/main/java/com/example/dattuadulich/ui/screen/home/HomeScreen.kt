@@ -111,7 +111,7 @@ fun CityCard(city: City, onClick: () -> Unit) {
                         modifier = Modifier.fillMaxSize().background(Color.LightGray.copy(alpha = 0.3f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(modifier = Modifier.size(30.dp), strokeWidth = 2.dp)
+                        Text("Đang tải lại ảnh...", fontSize = 12.sp, color = Color.Gray)
                     }
                 },
                 error = {
@@ -119,7 +119,7 @@ fun CityCard(city: City, onClick: () -> Unit) {
                         modifier = Modifier.fillMaxSize().background(Color.Gray.copy(alpha = 0.1f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Đang tải lại ảnh...", fontSize = 12.sp, color = Color.Gray)
+                        Text("Không thể tải ảnh", fontSize = 12.sp, color = Color.Gray)
                     }
                 }
             )

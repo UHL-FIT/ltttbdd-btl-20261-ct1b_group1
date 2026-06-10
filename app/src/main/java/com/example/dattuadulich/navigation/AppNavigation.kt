@@ -2,6 +2,7 @@
 package com.example.dattuadulich.navigation
 
 import android.util.Log.v
+import android.app.Application
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,6 +24,7 @@ import com.example.dattuadulich.ui.screen.setting.SettingViewModel
 import com.example.dattuadulich.ui.screen.booking.BookingScreen
 import com.example.dattuadulich.ui.screen.mybooking.MyBookingViewModel
 import com.example.dattuadulich.ui.screen.booking.BookingViewModel
+import com.example.dattuadulich.ui.screen.setting.AboutScreen
 
 @Composable
 fun AppNavigation(settingViewModel: SettingViewModel) {
@@ -46,23 +48,20 @@ fun AppNavigation(settingViewModel: SettingViewModel) {
                 val myBookingViewModel = remember { MyBookingViewModel(repository) }
                 MyBookingScreen(myBookingViewModel)
             }
-            composable(Screen.Setting.route) { SettingScreen(settingViewModel) }
+            composable(Screen.Setting.route) { SettingScreen(settingViewModel, navController) }
             composable(Screen.Booking.route) { backstackEntry ->
                 // 1. Lấy destinationName từ tham số điều hướng
                 val destinationName = backstackEntry.arguments?.getString("destinationName") ?: "Điểm đến"
-
-                // 2. Lấy tourImage từ tham số điều hướng (Hãy đảm bảo route của bạn có tham số này)
-                val tourImage = backstackEntry.arguments?.getString("tourImage") ?: ""
-
                 val context = LocalContext.current
                 val database = AppDatabase.getDatabase(context)
                 val repository = BookingRepository(database.bookingDao())
-                val bookingViewModel = remember { BookingViewModel(context, repository) }
+                val application = context.applicationContext as Application
 
-                // 3. Truyền ĐẦY ĐỦ 4 tham số theo đúng thứ tự
+                val bookingViewModel = remember { BookingViewModel(application, repository) }
+
+                // 3. Truyền tham số
                 BookingScreen(
                     navController = navController,
-                    tourImage = tourImage,
                     destinationName = destinationName,
                     viewModel = bookingViewModel
                 )
@@ -71,6 +70,10 @@ fun AppNavigation(settingViewModel: SettingViewModel) {
             composable(Screen.Detail.route) { backStackEntry ->
                 val destinationName = backStackEntry.arguments?.getString("destinationName") ?: "Điểm đến"
                 DetailScreen(navController, destinationName)
+            }
+            
+            composable(Screen.About.route) { 
+                AboutScreen(navController) 
             }
         }
     }
