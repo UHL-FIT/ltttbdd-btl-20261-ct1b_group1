@@ -19,9 +19,9 @@ class ExploreViewModel : ViewModel() {
 
     private fun fetchTours() {
         val mockTours = listOf(
-            TourModel(1, "Hạ Long – Kỳ quan thiên nhiên", "Quảng Ninh", "1.890.000đ", "https://i.ibb.co/v4S8L8Y/halong.jpg", 4.8),
-            TourModel(2, "Bãi Cháy – Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://i.ibb.co/mS6p0v3/baichay.jpg", 4.6),
-            TourModel(3, "Yên Tử – Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://i.ibb.co/fN0mP2Z/yentu.jpg", 4.7)
+            TourModel(1, "Hạ Long – Kỳ quan thiên nhiên", "Quảng Ninh", "1.890.000đ", "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSOugvG8FnC9BAPlFYdJMbVwKUitABzCf_ViPo91cSqrao4F8BIFUxBsTyEqOTIRDVMdQ1jDU81PG3XYxM1esebWVE&s=19", 4.8),
+            TourModel(2, "Bãi Cháy – Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://cdn3.ivivu.com/2025/06/Sun-World-Ha-Long-ivivu-7-1.jpg", 4.6),
+            TourModel(3, "Yên Tử – Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://static.vinwonders.com/production/2025/03/chua-dong-yen-tu.jpg", 4.7)
         )
         _uiState.value = _uiState.value.copy(tours = mockTours)
     }
@@ -68,15 +68,15 @@ class ExploreViewModel : ViewModel() {
     private fun getAllMockTours(): List<TourModel> {
         return listOf(
             TourModel(1, "Hà Nội - Tour Ẩm Thực Đêm", "Hà Nội", "650.000đ", "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800", 4.9),
-            TourModel(2, "Hà Nội - Khám phá Phố Cổ", "Hà Nội", "450.000đ", "https://images.unsplash.com/photo-1555931466-17955c747d52?w=800", 4.8),
-            TourModel(3, "Đà Nẵng - Bà Nà Hills Trọn Gói", "Đà Nẵng", "1.550.000đ", "https://images.unsplash.com/photo-1559592442-998818451124?w=800", 4.8),
-            TourModel(4, "Đà Nẵng - Ngắm Cầu Rồng & Chợ Đêm", "Đà Nẵng", "800.000đ", "https://images.unsplash.com/photo-1559592442-998818451124?w=800", 4.7),
-            TourModel(5, "Sài Gòn - City Tour & Bitexco", "TP HCM", "1.200.000đ", "https://images.unsplash.com/photo-1528127269322-539801943592?w=800", 4.7),
-            TourModel(6, "Sài Gòn - Thưởng Thức Bún Bò Huế", "TP HCM", "350.000đ", "https://images.unsplash.com/photo-1528127269322-539801943592?w=800", 4.6),
-            TourModel(7, "Hạ Long - Du Thuyền 5 Sao", "Quảng Ninh", "2.890.000đ", "https://i.ibb.co/v4S8L8Y/halong.jpg", 5.0),
-            TourModel(8, "Bãi Cháy - Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://i.ibb.co/mS6p0v3/baichay.jpg", 4.6),
-            TourModel(9, "Yên Tử - Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://i.ibb.co/fN0mP2Z/yentu.jpg", 4.7),
-            TourModel(10, "Đà Lạt - Check-in Thung Lũng Tình Yêu", "Đà Lạt", "1.100.000đ", "https://images.unsplash.com/photo-1589182397057-b16174fe924d?w=800", 4.9)
+            TourModel(2, "Hà Nội - Khám phá Phố Cổ", "Hà Nội", "450.000đ", "https://images.unsplash.com/photo-1679562078540-09ae866ef4bf?w=800", 4.8),
+            TourModel(3, "Đà Nẵng - Bà Nà Hills Trọn Gói", "Đà Nẵng", "1.550.000đ", "https://images.unsplash.com/photo-1677126578124-ec01051d0a5f?w=800", 4.8),
+            TourModel(4, "Đà Nẵng - Ngắm Cầu Rồng & Chợ Đêm", "Đà Nẵng", "800.000đ", "https://images.unsplash.com/photo-1603054561323-09f79d5df183??w=800", 4.7),
+            TourModel(5, "Sài Gòn - City Tour & Bitexco", "TP HCM", "1.200.000đ", "https://media.tacdn.com/media/attractions-splice-spp-674x446/06/67/aa/39.jpg?w=800", 4.7),
+            TourModel(6, "Sài Gòn - Thưởng Thức Cơm Tấm", "TP HCM", "350.000đ", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxACoDxIv9D11wMpioqpJa2Zx8Bq6p8nYeiQ&s&w=800", 4.6),
+            TourModel(7, "Hạ Long - Du Thuyền 5 Sao", "Quảng Ninh", "2.890.000đ", "https://thanhnien.mediacdn.vn/Uploaded/linhnt.qc/2021_07_08/namaste/namaste_1_FWXY.jpg?w=800", 5.0),
+            TourModel(8, "Bãi Cháy - Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://cdn3.ivivu.com/2025/06/Sun-World-Ha-Long-ivivu-7-1.jpg?w=800", 4.6),
+            TourModel(9, "Yên Tử - Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://static.vinwonders.com/production/2025/03/chua-dong-yen-tu.jpg?w=800", 4.7),
+            TourModel(10, "Đà Lạt - Check-in Thung Lũng Tình Yêu", "Đà Lạt", "1.100.000đ", "https://static.vinwonders.com/production/thung-lung-tinh-yeu-5.jpg?w=800", 4.9)
         )
     }
 
@@ -144,19 +144,19 @@ class ExploreViewModel : ViewModel() {
                 cityName = "Đà Nẵng",
                 description = "Thành phố của những cây cầu.",
                 reason = "Thời tiết nắng đẹp rất thích hợp để tắm biển Mỹ Khê và tham quan Bà Nà Hills.",
-                imageUrl = "https://images.unsplash.com/photo-1559592442-998818451124?w=800"
+                imageUrl = "https://sacotravel.com/wp-content/uploads/2023/07/da-nang.jpg?w=800"
             )
             weather.description.contains("lạnh") || weather.temp.toInt() < 25 -> TravelSuggestion(
                 cityName = "Đà Lạt",
                 description = "Thành phố ngàn hoa.",
                 reason = "Không khí se lạnh thích hợp để thưởng thức cà phê và ngắm hoa dã quỳ.",
-                imageUrl = "https://images.unsplash.com/photo-1589182397057-b16174fe924d?w=800"
+                imageUrl = "https://static.vinwonders.com/production/thanh-pho-da-lat-7.jpg?w=800"
             )
             else -> TravelSuggestion(
                 cityName = "Hạ Long",
                 description = "Vịnh Hạ Long - Kỳ quan thế giới.",
                 reason = "Trời mát mẻ, biển êm, lý tưởng để đi du thuyền ngắm cảnh vịnh.",
-                imageUrl = "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800"
+                imageUrl = "https://truyenhinhnghean.vn/file/4028eaa46735a26101673a4df345003c/052024/2024-05-12_180644_20240512180729.jpg?w=800"
             )
         }
     }

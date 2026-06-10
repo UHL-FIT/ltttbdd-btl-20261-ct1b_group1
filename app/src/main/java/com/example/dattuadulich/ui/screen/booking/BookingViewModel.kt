@@ -3,16 +3,13 @@ package com.example.dattuadulich.ui.screen.booking
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dattuadulich.data.local.AppDatabase
 import com.example.dattuadulich.data.local.DatTourEntity
 import com.example.dattuadulich.repository.BookingRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -26,8 +23,6 @@ class BookingViewModel(private val context: Context, private val repository: Boo
     val giaTien: StateFlow<Double> = _giaTien.asStateFlow()
 
     private  val _anhDiaDiem = MutableStateFlow("")
-    val anhDiaDiem: StateFlow<String> = _anhDiaDiem.asStateFlow()
-
     // Hàm đọc file Json
     fun taiThongTinTour(tenThanhPho: String) {
         try {
@@ -48,26 +43,28 @@ class BookingViewModel(private val context: Context, private val repository: Boo
                 _anhDiaDiem.value = "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80"
             }
 
-            }catch (e: Exception) {
+        }catch (e: Exception) {
             e.printStackTrace()
         }
 
     }
     fun luuHoaDon(
         tenDiadiem: String,
+        anhDiaDiem: String,
         tenKhachHang: String,
         sdtKhachHang: String,
         ngayKhoiHanh: String,
         soNguoi: Int,
         onSucess: () -> Unit,
-    ){
+        ){
         viewModelScope.launch {
+
             val tongTien = giaTien.value * soNguoi
             //đóng gói entity
             val hoaDon = DatTourEntity(
                 maDatTour = UUID.randomUUID().toString(),
                 tenDiaDiem = tenDiadiem,
-                anhDiaDiem = anhDiaDiem.value,
+                anhDiaDiem =  anhDiaDiem,
                 tenKhachHang = tenKhachHang,
                 sdtKhachHang = sdtKhachHang,
                 ngayKhoiHanh = ngayKhoiHanh,
@@ -81,5 +78,4 @@ class BookingViewModel(private val context: Context, private val repository: Boo
             onSucess()
         }
     }
-
 }

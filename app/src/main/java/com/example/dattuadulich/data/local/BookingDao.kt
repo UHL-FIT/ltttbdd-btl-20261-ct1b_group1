@@ -18,5 +18,4 @@ interface BookingDao {
 
     @Delete
     suspend fun deleteBooking(booking: DatTourEntity)
-
 }
