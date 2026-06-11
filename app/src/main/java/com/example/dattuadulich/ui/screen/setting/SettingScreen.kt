@@ -12,6 +12,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import android.provider.Settings
+import androidx.navigation.NavController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,7 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dattuadulich.ui.theme.DattuadulichTheme
 
 @Composable
-fun SettingScreen(viewModel: SettingViewModel = viewModel(), navController: androidx.navigation.NavController? = null) {
+fun SettingScreen(viewModel: SettingViewModel = viewModel(), navController: NavController? = null) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
@@ -147,7 +149,7 @@ fun SettingScreen(viewModel: SettingViewModel = viewModel(), navController: andr
             Text("Quyền riêng tư", fontWeight = FontWeight.Bold, color = sectionColor)
 
             ClickableSettingRow("Cho phép định vị", "GPS để dẫn đường") {
-                val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = "package:${context.packageName}".toUri()
                 context.startActivity(intent)
             }
