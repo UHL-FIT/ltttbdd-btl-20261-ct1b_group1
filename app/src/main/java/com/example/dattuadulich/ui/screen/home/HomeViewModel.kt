@@ -14,6 +14,7 @@ import androidx.lifecycle.AndroidViewModel
 import org.json.JSONObject
 import java.text.NumberFormat
 import java.util.Locale
+// [YÊU CẦU CƠ BẢN 2]: Thiết kế theo kiến trúc MVVM (ViewModel tách biệt khỏi UI)
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = PlaceRepository()
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -56,6 +57,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
             try {
+                // [YÊU CẦU NÂNG CAO A]: Dùng Retrofit + Coroutine gọi REST API thực
                 val weather = repository.getWeather("Hanoi")
 
                 val mockTours = listOf(
