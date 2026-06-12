@@ -67,6 +67,7 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
             // Nút Xuất JSON
             IconButton(
                 onClick = {
+                    // [YÊU CẦU 3 - Xuất/nhập dữ liệu]: Xuất dữ liệu (JSON)
                     // 1. Biến danh sách hóa đơn thành chuỗi JSON
                     val jsonString = Gson().toJson(uiState.historyList)
 
@@ -83,6 +84,7 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
                 Icon(Icons.Default.Share, contentDescription = "Xuất JSON", tint = MaterialTheme.colorScheme.primary)
             }
         }
+        // [YÊU CẦU 3 - Thống kê]: Thống kê dữ liệu (Tổng số bản ghi, Min/Max)
         // VẼ BẢNG THỐNG KÊ (Dùng các biến đã hứng ở trên)
         if (uiState.historyList.isNotEmpty()) {
             Card(
@@ -125,6 +127,7 @@ fun MyBookingScreen(viewModel: MyBookingViewModel) {
                 items(uiState.historyList) { hoaDon ->
                     BookingCard(
                         hoaDon = hoaDon,
+                        // [YÊU CẦU 3 - Chức năng]: Sửa (Update) và Xóa (Delete)
                         onEditClick = { editingBooking = hoaDon },
                         onCancelClick = { viewModel.xoaHoaDon(hoaDon) }
                     )

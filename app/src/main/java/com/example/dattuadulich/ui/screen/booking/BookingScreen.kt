@@ -183,6 +183,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
 
             Button(
                 onClick = {
+                    // [YÊU CẦU 3 - Validation]: Kiểm tra dữ liệu đầu vào hợp lệ & hiển thị thông báo lỗi
                     // CÁC CHỐT CHẶN BẢO VỆ ĐÃ ĐƯỢC ĐƠN GIẢN HÓA:
                     if (name.isBlank()) {
                         errorMessage = "Vui lòng nhập Họ và tên!"
