@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "dat_tour")
+//model dữ liệu lưu trữ trong database
 data class DatTourEntity(
     @PrimaryKey
     val maDatTour: String,

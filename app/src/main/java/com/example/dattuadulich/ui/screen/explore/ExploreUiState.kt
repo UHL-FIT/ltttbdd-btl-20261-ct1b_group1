@@ -7,7 +7,7 @@ data class ForecastItem(
     val icon: String,
     val temp: String
 )
-
+//model dữ liệu hiển thị lên màn hình
 data class WeatherData(
     val temp: String,
     val description: String,

@@ -27,7 +27,7 @@ import androidx.lifecycle.ViewModel
 fun DetailScreen(
     navController: NavController, 
     destinationName: String,
-    viewModel: DetailViewModel = viewModel()
+    viewModel: DetailViewModel = viewModel()//viewmodel chứa logic
 ) {
     val state by viewModel.uiState
     

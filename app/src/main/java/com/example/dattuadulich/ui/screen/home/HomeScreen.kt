@@ -27,7 +27,7 @@ import coil.compose.SubcomposeAsyncImage
 @Composable
 fun HomeScreen(
     navController: NavController,
-    homeViewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel = viewModel()//viewmodel chứa logic
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
 
@@ -37,6 +37,14 @@ fun HomeScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
             is HomeUiState.Success -> {
+                // 1. Tạo bộ nhớ để lưu trữ chữ mà khách hàng gõ vào
+                var searchQuery by remember { mutableStateOf("") }
+
+                // 2. Tự động lọc danh sách Tour chứa từ khóa đó (ignoreCase = true nghĩa là không phân biệt hoa/thường)
+                val filteredCities = state.cities.filter { city ->
+                    city.name.contains(searchQuery, ignoreCase = true)
+                }.take(6)
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
@@ -45,12 +53,18 @@ fun HomeScreen(
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "Khám phá Việt Nam \uD83C\uDDFB\uD83C\uDDF3",
+                            text = "Khám phá Việt Nam 🇻🇳",
                             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.onBackground
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        SearchBarUI()
+
+                        // 3. Truyền bộ nhớ vào cho ô tìm kiếm
+                        SearchBarUI(
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { newQuery -> searchQuery = newQuery }
+                        )
+
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(
                             text = "Thành phố phổ biến",
@@ -60,12 +74,13 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
-                    items(state.cities) { city ->
+                    // 4. In ra danh sách ĐÃ ĐƯỢC LỌC thay vì danh sách gốc
+                    items(filteredCities) { city ->
                         CityCard(city, onClick = {
                             navController.navigate("detail/${city.name}")
                         })
                     }
-                    
+
                     item {
                         Spacer(modifier = Modifier.height(32.dp))
                     }
@@ -144,10 +159,10 @@ fun CityCard(city: City, onClick: () -> Unit) {
 }
 
 @Composable
-fun SearchBarUI() {
+fun SearchBarUI(searchQuery: String, onSearchQueryChange: (String) -> Unit) {
     TextField(
-        value = "",
-        onValueChange = {},
+        value = searchQuery,
+        onValueChange = onSearchQueryChange,
         placeholder = { Text("Bạn muốn đi đâu?", color = MaterialTheme.colorScheme.onSurfaceVariant) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
         shape = RoundedCornerShape(24.dp),

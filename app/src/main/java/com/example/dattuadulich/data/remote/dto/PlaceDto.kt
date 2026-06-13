@@ -23,6 +23,7 @@ data class Wind(
     @SerializedName("speed") val speed: Double
 )
 
+//model dữ liệu tour
 data class TourModel(
     val id: Int,
     val title: String,

@@ -30,7 +30,7 @@ import com.example.dattuadulich.data.remote.dto.TourModel
 @Composable
 fun ExploreScreen(
     navController: NavController,
-    viewModel: ExploreViewModel = viewModel()
+    viewModel: ExploreViewModel = viewModel()//viewmodel chứa logic
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
