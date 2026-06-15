@@ -29,7 +29,7 @@ fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel = viewModel()//viewmodel chứa logic
 ) {
-    val uiState by homeViewModel.uiState.collectAsState()
+    val uiState by homeViewModel.uiState.collectAsState()//state
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         when (val state = uiState) {
@@ -45,6 +45,7 @@ fun HomeScreen(
                     city.name.contains(searchQuery, ignoreCase = true)
                 }.take(6)
 
+                // [YÊU CẦU CƠ BẢN 1]: Danh sách dữ liệu phải dùng LazyColumn/LazyGrid
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
@@ -112,6 +113,7 @@ fun CityCard(city: City, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
+            // [YÊU CẦU NÂNG CAO C]: Load ảnh URL bằng thư viện Coil
             // Dùng Subcompose để xử lý các trạng thái của ảnh
             SubcomposeAsyncImage(
                 model = city.imageUrl,

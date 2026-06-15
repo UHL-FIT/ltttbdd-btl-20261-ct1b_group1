@@ -10,7 +10,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface BookingDao {
+interface BookingDao {// thêm sửa xóa xem ở đây
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBooking(booking: DatTourEntity)
 

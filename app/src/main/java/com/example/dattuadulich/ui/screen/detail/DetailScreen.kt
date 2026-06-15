@@ -29,7 +29,7 @@ fun DetailScreen(
     destinationName: String,
     viewModel: DetailViewModel = viewModel()//viewmodel chứa logic
 ) {
-    val state by viewModel.uiState
+    val state by viewModel.uiState //state
     
     // Gọi API khi màn hình khởi tạo
     LaunchedEffect(destinationName) {

@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
             // Lắng nghe trạng thái UI, quan trọng nhất là isDarkMode
             val uiState by settingViewModel.uiState.collectAsState()
 
+            // [YÊU CẦU CƠ BẢN 1]: Áp dụng MaterialTheme thống nhất (màu, font, shape)
             // 1. Truyền giá trị isDarkMode từ ViewModel vào Theme
             DattuadulichTheme(darkTheme = uiState.isDarkMode) {
 
@@ -46,6 +47,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    // [YÊU CẦU CƠ BẢN 2]: Override và ghi log (Logcat) ít nhất 4 callback vòng đời
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart: Activity is started")

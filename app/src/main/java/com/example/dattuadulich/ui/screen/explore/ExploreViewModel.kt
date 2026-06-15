@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-// viewmodel chứa logic
-class ExploreViewModel : ViewModel() {
+class ExploreViewModel : ViewModel() {// viewmodel chứa logic, xoay không bị ngắt khi xoay màn hình
     private val _uiState = MutableStateFlow(ExploreUiState()) // state chứa dữ liệu hiện tại
     val uiState: StateFlow<ExploreUiState> = _uiState.asStateFlow()
 
@@ -23,11 +22,11 @@ class ExploreViewModel : ViewModel() {
             TourModel(2, "Bãi Cháy – Sun World Hạ Long", "Quảng Ninh", "950.000đ", "https://cdn3.ivivu.com/2025/06/Sun-World-Ha-Long-ivivu-7-1.jpg", 4.6),
             TourModel(3, "Yên Tử – Chốn thiền linh thiêng", "Quảng Ninh", "850.000đ", "https://static.vinwonders.com/production/2025/03/chua-dong-yen-tu.jpg", 4.7)
         )
-        _uiState.value = _uiState.value.copy(tours = mockTours)
+        _uiState.value = _uiState.value.copy(tours = mockTours)//viewmodel cập nhật
     }
 
     fun onSearchQueryChange(query: String) {
-        _uiState.value = _uiState.value.copy(searchQuery = query)
+        _uiState.value = _uiState.value.copy(searchQuery = query)//UI gửi xự kiện và ở đây viewmodel nhận xự kiện
     }
 
     fun searchWeather() {

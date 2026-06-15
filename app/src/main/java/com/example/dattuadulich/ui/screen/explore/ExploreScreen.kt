@@ -17,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,7 +34,7 @@ fun ExploreScreen(
     navController: NavController,
     viewModel: ExploreViewModel = viewModel()//viewmodel chứa logic
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()//state (UI nhận dữ liệu)
 
     Box(
         modifier = Modifier
@@ -41,10 +43,10 @@ fun ExploreScreen(
     ){
         ExploreContent(
             uiState = uiState,
-            onQueryChange = { viewModel.onSearchQueryChange(it) },
-            onSearchClick = { viewModel.searchWeather() },
+            onQueryChange = { viewModel.onSearchQueryChange(it) },//UI gửi xự kiện và ở đây viewmodel nhận xự kiện giao diện
+            onSearchClick = { viewModel.searchWeather() },//UI gửi xự kiện và ở đây viewmodel nhận xự kiện giao diện
             onTourClick = { tourTitle ->
-                navController.navigate("detail/$tourTitle")
+                navController.navigate("detail/$tourTitle")//quản lý điều hướng
             }
         )
 
@@ -91,7 +93,7 @@ fun ExploreContent(
                     }
                 )
                 Button(
-                    onClick = onSearchClick,
+                    onClick = onSearchClick,//sự kiện click
                     modifier = Modifier.height(56.dp),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
@@ -147,7 +149,7 @@ fun ExploreContent(
 
 @Composable
 fun WeatherCard(weather: WeatherData?) {
-    Card(
+    Card(// đồng bộ hóa màu
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.fillMaxWidth()
@@ -206,7 +208,7 @@ fun WeatherCard(weather: WeatherData?) {
 }
 
 @Composable
-fun WeatherDetailItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
+fun WeatherDetailItem(icon: ImageVector, label: String, value: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(icon, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
         Spacer(modifier = Modifier.width(8.dp))
@@ -294,7 +296,7 @@ fun SuggestionCard(suggestion: TravelSuggestion?) {
                         fontSize = 12.sp,
                         color = Color.Gray,
                         modifier = Modifier.padding(top = 8.dp),
-                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                        fontStyle = FontStyle.Italic
                     )
                 }
             }

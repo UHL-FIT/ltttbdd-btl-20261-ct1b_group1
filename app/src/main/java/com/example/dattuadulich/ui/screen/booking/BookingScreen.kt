@@ -20,11 +20,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 @OptIn(ExperimentalMaterial3Api::class)
+//viewmodel chứa logic
 @Composable
 fun BookingScreen(navController: NavController, destinationName: String, viewModel: BookingViewModel) {
     var name by remember { mutableStateOf("") }
@@ -32,7 +35,8 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
     var phoneNumber by remember { mutableStateOf("") }
     var numberOfPeople by remember { mutableStateOf("1") }
     var errorMessage by remember { mutableStateOf("") }
-    val uiState by viewModel.uiState.collectAsState()//viewmodel chứa logic
+    val uiState by viewModel.uiState.collectAsState()//state
+    val context = LocalContext.current
 
     // DatePicker State
     var showDatePicker by remember { mutableStateOf(false) }
@@ -85,7 +89,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    val giaTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN")).format(uiState.giaTien)
+                    val giaTienStr = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(uiState.giaTien)
                     Text(
                         "Giá vé: $giaTienStr đ / người",
                         color = MaterialTheme.colorScheme.primary,
@@ -158,7 +162,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            if (errorMessage.isNotEmpty()) {
+            if (errorMessage.isNotEmpty()) {//kiểm tra nếu lỗi thì sẽ thoong báo
                 Text(
                     text = errorMessage,
                     color = Color.Red,
@@ -169,7 +173,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
             // Tổng tiền tính nhanh (Tính năng xịn xò của Thành viên 2)
             val soNguoiInt = numberOfPeople.toIntOrNull() ?: 0
             val tongTien = uiState.giaTien * soNguoiInt
-            val tongTienStr = java.text.NumberFormat.getNumberInstance(Locale("vi", "VN")).format(tongTien)
+            val tongTienStr = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(tongTien)
 
             Text(
                 "Tổng cộng: $tongTienStr đ", 
@@ -180,6 +184,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
 
             Button(
                 onClick = {
+                    // [YÊU CẦU 3 - Validation]: Kiểm tra dữ liệu đầu vào hợp lệ & hiển thị thông báo lỗi
                     // CÁC CHỐT CHẶN BẢO VỆ ĐÃ ĐƯỢC ĐƠN GIẢN HÓA:
                     if (name.isBlank()) {
                         errorMessage = "Vui lòng nhập Họ và tên!"
@@ -209,6 +214,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                         ngayKhoiHanh = date,
                         soNguoi = soNguoiInt,
                         onSucess = {
+                            Toast.makeText(context, "🎉 Đặt tour thành công!", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         }
                     )

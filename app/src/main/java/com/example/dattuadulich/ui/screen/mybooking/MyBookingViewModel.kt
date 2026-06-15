@@ -15,7 +15,7 @@ class MyBookingViewModel(private val repository: BookingRepository) : ViewModel(
     // 1. Tự động lôi danh sách hóa đơn từ Database lên và ánh xạ sang MyBookingUiState
     val uiState: StateFlow<MyBookingUiState> = repository.getAllBookings()
         .map { danhSach ->
-            MyBookingUiState(
+            MyBookingUiState(//tính toán chi tiêu số thống kê
                 historyList = danhSach,
                 tongSoTour = danhSach.size,
                 tongTien = danhSach.sumOf { it.tongTien },
