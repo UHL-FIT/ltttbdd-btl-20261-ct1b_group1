@@ -61,9 +61,9 @@ fun AppNavigation(settingViewModel: SettingViewModel) {
 
                 // 3. Truyền tham số
                 BookingScreen(
-                    navController = navController,
-                    destinationName = destinationName,
-                    viewModel = bookingViewModel
+                    navController,
+                    destinationName,
+                    bookingViewModel
                 )
             }
 

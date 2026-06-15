@@ -11,7 +11,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.ui.graphics.vector.ImageVector
 
 // Chứa danh sách các địa chỉ trong App
-sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
+sealed class Screen(val route: String, val title: String, val icon: ImageVector) { //sealed  dùng để giới hạn số lượng màn hình
     object Home : Screen("home", "Trang chủ", Icons.Default.Home)
     object Explore : Screen("explore", "Khám phá", Icons.Default.Explore)
     object MyBooking : Screen("my_booking", "Lịch sử", Icons.Default.History)

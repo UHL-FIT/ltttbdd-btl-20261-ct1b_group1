@@ -69,7 +69,11 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(
                             text = "Thành phố phổ biến",
+                            // 1. Lấy kiểu chữ Title cỡ Lớn từ hệ thống M3
+                            //2. Ép nó phải In Đậm (Bold) dù mặc định có thể là Regular
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            // Lấy màu chữ chuẩn dành cho việc hiển thị TRÊN nền (Background)
+                            // giúp chữ luôn nổi bật và dễ đọc kể cả khi bạn đổi sang Dark Mode
                             color = MaterialTheme.colorScheme.onBackground
                         )
                         Spacer(modifier = Modifier.height(8.dp))

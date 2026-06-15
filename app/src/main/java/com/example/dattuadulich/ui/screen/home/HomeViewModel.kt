@@ -52,23 +52,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
         return cityList
     }
-
     fun fetchHomeData() {
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
             try {
-                // [YÊU CẦU NÂNG CAO A]: Dùng Retrofit + Coroutine gọi REST API thực
-                val weather = repository.getWeather("Hanoi")
-
-                val mockTours = listOf(
-                    TourModel(1, "Hà Nội - Tour Ẩm Thực Đêm", "Hà Nội", "650.000đ", "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=60", 4.9),
-                    TourModel(2, "Sài Gòn - Ngắm Hoàng Hôn Sông Hàn", "TP HCM", "1.200.000đ", "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=60", 4.7),
-                    TourModel(3, "Đà Nẵng - Bà Nà Hills Trọn Gói", "Đà Nẵng", "1.550.000đ", "https://images.unsplash.com/photo-1677126578124-ec01051d0a5f?w=800&q=60", 4.8),
-                    TourModel(4, "Hạ Long - Du Thuyền 5 Sao", "Quảng Ninh", "2.890.000đ", "https://thanhnien.mediacdn.vn/Uploaded/linhnt.qc/2021_07_08/namaste/namaste_1_FWXY.jpg?w=800&q=60", 5.0)
-                )
-
                 val cities = getCities()
-                _uiState.value = HomeUiState.Success(weather, mockTours, cities)
+                // Đã xóa bỏ chữ mockTours ở đây
+                _uiState.value = HomeUiState.Success(cities)
             } catch (e: Exception) {
                 _uiState.value = HomeUiState.Error(e.message ?: "Lỗi tải dữ liệu")
             }
