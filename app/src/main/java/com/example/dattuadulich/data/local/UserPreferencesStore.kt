@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 // Tạo DataStore gắn với Context, tên file lưu trên máy là "user_prefs"
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_prefs")
 
-class UserPreferencesStore(private val context: Context) {
+class UserPreferencesStore(private val context: Context) {//datastore lưu trữ trạng thái của ứng dụng
 
     // Tên "chìa khóa" để lưu/đọc giá trị isDarkMode
     companion object {

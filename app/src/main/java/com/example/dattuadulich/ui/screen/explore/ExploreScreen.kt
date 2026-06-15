@@ -32,9 +32,9 @@ import com.example.dattuadulich.data.remote.dto.TourModel
 @Composable
 fun ExploreScreen(
     navController: NavController,
-    viewModel: ExploreViewModel = viewModel()
+    viewModel: ExploreViewModel = viewModel()//viewmodel chứa logic
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()//state (UI nhận dữ liệu)
 
     Box(
         modifier = Modifier
@@ -43,10 +43,10 @@ fun ExploreScreen(
     ){
         ExploreContent(
             uiState = uiState,
-            onQueryChange = { viewModel.onSearchQueryChange(it) },
-            onSearchClick = { viewModel.searchWeather() },
+            onQueryChange = { viewModel.onSearchQueryChange(it) },//mô hình MVVM chảy 1 chiểu xuống UI (gửi dữ liệu)
+            onSearchClick = { viewModel.searchWeather() },//UI gửi xự kiện và ở đây viewmodel nhận xự kiện giao diện
             onTourClick = { tourTitle ->
-                navController.navigate("detail/$tourTitle")
+                navController.navigate("detail/$tourTitle")//quản lý điều hướng
             }
         )
 
@@ -93,7 +93,7 @@ fun ExploreContent(
                     }
                 )
                 Button(
-                    onClick = onSearchClick,
+                    onClick = onSearchClick,//sự kiện click
                     modifier = Modifier.height(56.dp),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
@@ -149,7 +149,7 @@ fun ExploreContent(
 
 @Composable
 fun WeatherCard(weather: WeatherData?) {
-    Card(
+    Card(// đồng bộ hóa màu
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.fillMaxWidth()

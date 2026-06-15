@@ -27,6 +27,7 @@ import java.util.Locale
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 @OptIn(ExperimentalMaterial3Api::class)
+//viewmodel chứa logic
 @Composable
 fun BookingScreen(navController: NavController, destinationName: String, viewModel: BookingViewModel) {
     var name by remember { mutableStateOf("") }
@@ -34,7 +35,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
     var phoneNumber by remember { mutableStateOf("") }
     var numberOfPeople by remember { mutableStateOf("1") }
     var errorMessage by remember { mutableStateOf("") }
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()//state
     val context = LocalContext.current
 
     // DatePicker State
@@ -56,7 +57,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
         topBar = {
             TopAppBar(
                 title = { Text("Đặt Tour", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
+                navigationIcon = {//popback quay lại
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
@@ -161,7 +162,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            if (errorMessage.isNotEmpty()) {
+            if (errorMessage.isNotEmpty()) {//kiểm tra nếu lỗi thì sẽ thoong báo
                 Text(
                     text = errorMessage,
                     color = Color.Red,

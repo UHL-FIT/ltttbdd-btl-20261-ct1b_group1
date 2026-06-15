@@ -37,10 +37,10 @@ import android.content.Intent
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.platform.LocalContext
 import com.google.gson.Gson
-
+// viewmodel chứa logic
 @Composable
 fun MyBookingScreen(viewModel: MyBookingViewModel) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()//state
     var editingBooking by remember { mutableStateOf<DatTourEntity?>(null) }
 
     Column(

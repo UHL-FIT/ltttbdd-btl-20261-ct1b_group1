@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.example.dattuadulich.repository.PlaceRepository
-
+//viewmodel chứa logic và xoay màn hình
 class ExploreViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ExploreUiState())
-    val uiState: StateFlow<ExploreUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ExploreUiState())//state (UI gửi dữ liệu)
+    val uiState: StateFlow<ExploreUiState> = _uiState.asStateFlow()//state (UI nhận dữ liệu)
     // Gọi cái ống dẫn API vào đây
     private val repository = PlaceRepository()
     init {
@@ -30,7 +30,7 @@ class ExploreViewModel : ViewModel() {
     }
 
     fun onSearchQueryChange(query: String) {
-        _uiState.value = _uiState.value.copy(searchQuery = query)
+        _uiState.value = _uiState.value.copy(searchQuery = query)//Mô hình MVVM truyền dữ liệu xuống
     }
 
     fun searchWeather() {

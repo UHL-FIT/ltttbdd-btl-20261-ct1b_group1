@@ -27,9 +27,9 @@ import androidx.lifecycle.ViewModel
 fun DetailScreen(
     navController: NavController, 
     destinationName: String,
-    viewModel: DetailViewModel = viewModel()
+    viewModel: DetailViewModel = viewModel()//viewmodel chứa logic
 ) {
-    val state by viewModel.uiState
+    val state by viewModel.uiState //state
     
     // Gọi API khi màn hình khởi tạo
     LaunchedEffect(destinationName) {
