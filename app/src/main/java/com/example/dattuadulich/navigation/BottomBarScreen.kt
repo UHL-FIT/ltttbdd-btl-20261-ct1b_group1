@@ -8,7 +8,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 @Composable
 fun BottomBarScreen(navController: NavController) {
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
-    val currentRoute = currentBackStackEntry?.destination?.route
+    val currentRoute = currentBackStackEntry?.destination?.route // lấy cái biến route bên trong cái trang hiện tại
 
     val bottomBarScreens = listOf(Screen.Home, Screen.Explore, Screen.MyBooking, Screen.Setting)
 
@@ -18,7 +18,7 @@ fun BottomBarScreen(navController: NavController) {
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         bottomBarScreens.forEach { screen ->
-            val isSelected = currentRoute == screen.route
+            val isSelected = currentRoute == screen.route // kiểm tra current hiện tại với route trong list item trong bottombarscreen
 
             NavigationBarItem(
                 selected = isSelected,

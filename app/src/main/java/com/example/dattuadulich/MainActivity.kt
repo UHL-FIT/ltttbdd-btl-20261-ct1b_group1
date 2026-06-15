@@ -1,6 +1,5 @@
 package com.example.dattuadulich
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -20,6 +19,7 @@ import com.example.dattuadulich.ui.theme.DattuadulichTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("AppLifecycle", "onCreate")
         // Kích hoạt trải nghiệm tràn viền (tùy chọn nhưng nên có)
         enableEdgeToEdge()
         setContent {
@@ -41,35 +41,33 @@ class MainActivity : ComponentActivity() {
                     // 3. Nếu bạn dùng Navigation (nhiều màn hình)
                     AppNavigation(settingViewModel)
 
-                    // Hoặc nếu bạn chỉ muốn test riêng màn hình Setting:
-                    // SettingScreen(viewModel = settingViewModel)
                 }
             }
         }
     }
-    // [YÊU CẦU CƠ BẢN 2]: Override và ghi log (Logcat) ít nhất 4 callback vòng đời
+    // [YÊU CẦU CƠ BẢN 2]: Override và ghi log (Logcat) 6 callback vòng đời
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart: Activity is started")
+        Log.d("AppLifecycle", "onStart")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume: Activity is resumed")
+        Log.d("AppLifecycle", "onResume")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "onPause: Activity is paused")
+        Log.d("AppLifecycle", "onPause")
     }
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "onStop: Activity is stopped")
+        Log.d("AppLifecycle", "onStop")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy: Activity is destroyed")
+        Log.d("AppLifecycle", "onDestroy")
     }
 }

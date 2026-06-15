@@ -8,11 +8,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.example.dattuadulich.repository.PlaceRepository
 
 class ExploreViewModel : ViewModel() {
+
     private val _uiState = MutableStateFlow(ExploreUiState())
     val uiState: StateFlow<ExploreUiState> = _uiState.asStateFlow()
-
+    // Gọi cái ống dẫn API vào đây
+    private val repository = PlaceRepository()
     init {
         fetchTours()
     }
@@ -65,7 +68,8 @@ class ExploreViewModel : ViewModel() {
         }
     }
 
-    private fun getAllMockTours(): List<TourModel> {
+    private fun
+            getAllMockTours(): List<TourModel> {
         return listOf(
             TourModel(1, "Hà Nội - Tour Ẩm Thực Đêm", "Hà Nội", "650.000đ", "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800", 4.9),
             TourModel(2, "Hà Nội - Khám phá Phố Cổ", "Hà Nội", "450.000đ", "https://images.unsplash.com/photo-1679562078540-09ae866ef4bf?w=800", 4.8),
@@ -79,86 +83,36 @@ class ExploreViewModel : ViewModel() {
             TourModel(10, "Đà Lạt - Check-in Thung Lũng Tình Yêu", "Đà Lạt", "1.100.000đ", "https://static.vinwonders.com/production/thung-lung-tinh-yeu-5.jpg?w=800", 4.9)
         )
     }
-
     private suspend fun getWeather(city: String): WeatherData? {
-        val normalizedCity = city.lowercase()
-        return when {
-            normalizedCity.contains("hà nội") -> WeatherData(
-                temp = "28",
-                description = "Trời nhiều mây",
-                humidity = "65",
-                windSpeed = "12.5",
-                icon = "04d",
-                forecast = generateForecast("Trời mát")
+        return try {
+            // 1. Tải dữ liệu thời tiết trực tiếp từ mạng về bằng Retrofit
+            val response = repository.getWeather(city)
+
+            // 2. Lấy tình trạng thời tiết (Bằng Tiếng Anh: "clear sky", "rain"...)
+            val englishDesc = response.weather.firstOrNull()?.description ?: ""
+
+            // 3. MÁY PHIÊN DỊCH MINI (Dịch tiếng Anh sang Việt để giữ nguyên logic App của bạn)
+            val vietnameseDesc = when {
+                englishDesc.contains("clear") || englishDesc.contains("sun") -> "Trời nắng đẹp"
+                englishDesc.contains("rain") || englishDesc.contains("drizzle") -> "Trời mưa"
+                englishDesc.contains("cloud") -> "Trời nhiều mây"
+                englishDesc.contains("snow") || response.main.temp < 20 -> "Trời se lạnh"
+                else -> "Mát mẻ"
+            }
+
+            // 4. Lắp ráp dữ liệu API vào khuôn giao diện cũ để không bị vỡ UI
+            WeatherData(
+                temp = response.main.temp.toInt().toString(), // Làm tròn độ C
+                description = vietnameseDesc, // Chữ tiếng Việt đã dịch
+                humidity = response.main.humidity.toString(),
+                windSpeed = response.wind.speed.toString(),
+                icon = response.weather.firstOrNull()?.icon ?: "01d",
+                forecast = generateForecast(vietnameseDesc) // Dự báo 7 ngày giữ nguyên
             )
-            normalizedCity.contains("đà nẵng") || normalizedCity.contains("hội an") -> WeatherData(
-                temp = "32",
-                description = "Trời nắng đẹp",
-                humidity = "60",
-                windSpeed = "15.2",
-                icon = "01d",
-                forecast = generateForecast("Nắng")
-            )
-            normalizedCity.contains("hồ chí minh") || normalizedCity.contains("sài gòn") -> WeatherData(
-                temp = "34",
-                description = "Nắng nóng",
-                humidity = "55",
-                windSpeed = "10.0",
-                icon = "01d",
-                forecast = generateForecast("Nắng nóng")
-            )
-            normalizedCity.contains("quảng ninh") || normalizedCity.contains("hạ long") || normalizedCity.contains("bãi cháy") || normalizedCity.contains("yên tử") || normalizedCity.contains("cô tô") || normalizedCity.contains("bình liêu") -> WeatherData(
-                temp = "30",
-                description = "Gió biển nhẹ",
-                humidity = "70",
-                windSpeed = "18.0",
-                icon = "02d",
-                forecast = generateForecast("Gió nhẹ")
-            )
-            normalizedCity.contains("đà lạt") || normalizedCity.contains("sa pa") || normalizedCity.contains("mộc châu") -> WeatherData(
-                temp = "18",
-                description = "Trời se lạnh",
-                humidity = "80",
-                windSpeed = "8.5",
-                icon = "03d",
-                forecast = generateForecast("Lạnh")
-            )
-            normalizedCity.contains("nha trang") || normalizedCity.contains("mũi né") || normalizedCity.contains("vũng tàu") -> WeatherData(
-                temp = "31",
-                description = "Biển xanh nắng vàng",
-                humidity = "65",
-                windSpeed = "14.0",
-                icon = "01d",
-                forecast = generateForecast("Nắng biển")
-            )
-            normalizedCity.contains("phú quốc") || normalizedCity.contains("đảo phú quý") -> WeatherData(
-                temp = "30",
-                description = "Nắng nhẹ, gió mát",
-                humidity = "75",
-                windSpeed = "16.5",
-                icon = "02d",
-                forecast = generateForecast("Biển êm")
-            )
-            normalizedCity.contains("ninh bình") || normalizedCity.contains("huế") -> WeatherData(
-                temp = "27",
-                description = "Trời dịu mát",
-                humidity = "68",
-                windSpeed = "11.0",
-                icon = "04d",
-                forecast = generateForecast("Mát mẻ")
-            )
-            normalizedCity.contains("cần thơ") -> WeatherData(
-                temp = "33",
-                description = "Nắng ấm miền Tây",
-                humidity = "72",
-                windSpeed = "9.5",
-                icon = "02d",
-                forecast = generateForecast("Nắng ấm")
-            )
-            else -> null
+        } catch (e: Exception) {
+            null // Nếu gõ sai tên tỉnh hoặc mất mạng thì báo lỗi tìm không thấy
         }
     }
-
     private fun generateForecast(baseDesc: String): List<ForecastItem> {
         val days = listOf("Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật")
         return List(10) { i ->
