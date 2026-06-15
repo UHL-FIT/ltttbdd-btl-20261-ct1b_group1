@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.dattuadulich.navigation.Screen
 import com.example.dattuadulich.ui.theme.DattuadulichTheme
 
 @Composable
@@ -180,7 +181,7 @@ fun SettingScreen(viewModel: SettingViewModel = viewModel(), navController: NavC
             }
 
             ClickableSettingRow("Giới thiệu ứng dụng", "Thông tin về ứng dụng này") {
-                navController?.navigate(com.example.dattuadulich.navigation.Screen.About.route)
+                navController?.navigate(Screen.About.route)
             }
 
             ClickableSettingRow("Đánh giá ứng dụng", "Ủng hộ 5 sao trên Store") {

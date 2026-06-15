@@ -43,7 +43,7 @@ fun ExploreScreen(
     ){
         ExploreContent(
             uiState = uiState,
-            onQueryChange = { viewModel.onSearchQueryChange(it) },//UI gửi xự kiện và ở đây viewmodel nhận xự kiện giao diện
+            onQueryChange = { viewModel.onSearchQueryChange(it) },//mô hình MVVM chảy 1 chiểu xuống UI (gửi dữ liệu)
             onSearchClick = { viewModel.searchWeather() },//UI gửi xự kiện và ở đây viewmodel nhận xự kiện giao diện
             onTourClick = { tourTitle ->
                 navController.navigate("detail/$tourTitle")//quản lý điều hướng

@@ -57,7 +57,7 @@ fun BookingScreen(navController: NavController, destinationName: String, viewMod
         topBar = {
             TopAppBar(
                 title = { Text("Đặt Tour", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
+                navigationIcon = {//popback quay lại
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }

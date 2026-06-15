@@ -14,8 +14,6 @@ sealed class HomeUiState {
     object Loading : HomeUiState()
 
     data class Success(
-        val weather: WeatherResponse,
-        val tours: List<TourModel>,
         val cities: List<City> // Thêm list city vào Success state
     ) : HomeUiState()
 
