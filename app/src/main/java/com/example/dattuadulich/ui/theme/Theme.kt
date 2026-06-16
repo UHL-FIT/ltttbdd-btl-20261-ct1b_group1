@@ -22,7 +22,7 @@ private val DarkColorScheme = darkColorScheme(
 
 // Định nghĩa màu cho Chế độ sáng
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFFF57C00),
+    primary = Color(0xFF6650a4),
     background = Color(0xFFF5F5F5), // Nền xám nhạt
     surface = Color.White,          // Nền các Card trắng
     onBackground = Color.Black,

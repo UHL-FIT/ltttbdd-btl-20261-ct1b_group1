@@ -19,7 +19,7 @@ class UserPreferencesStore(private val context: Context) {//datastore lưu trữ
         val KEY_DARK_MODE = booleanPreferencesKey("dark_mode")
     }
 
-    // Đọc: trả về Fliow<Boolean>, tự động cập nhật khi gá trị thay đổi
+    // Đọc: trả về Flow<Boolean>, tự động cập nhật khi gá trị thay đổi
     val darkModeFlow: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
             preferences[KEY_DARK_MODE] ?: false // mặc định là Light mode

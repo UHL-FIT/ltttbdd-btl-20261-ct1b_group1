@@ -129,15 +129,15 @@ fun CityCard(city: City, onClick: () -> Unit) {
                 contentScale = ContentScale.Crop,
                 loading = {
                     Box(
-                        modifier = Modifier.fillMaxSize().background(Color.LightGray.copy(alpha = 0.3f)),
+                        modifier = Modifier.fillMaxSize().background(Color.Blue.copy(alpha = 0.3f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Đang tải lại ảnh...", fontSize = 12.sp, color = Color.Gray)
+                        Text("Đang tải lại ảnh...", fontSize = 12.sp, color = Color.Blue)
                     }
                 },
                 error = {
                     Box(
-                        modifier = Modifier.fillMaxSize().background(Color.Gray.copy(alpha = 0.1f)),
+                        modifier = Modifier.fillMaxSize().background(Color.Blue.copy(alpha = 0.1f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("Không thể tải ảnh", fontSize = 12.sp, color = Color.Gray)
@@ -149,7 +149,7 @@ fun CityCard(city: City, onClick: () -> Unit) {
                 Text(
                     text = city.name,
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = Color.Blue
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
